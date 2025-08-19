@@ -151,6 +151,42 @@ public class Controlador extends HttpServlet {
                             proveedorDAO.agregar(proveedor);
                             request.getRequestDispatcher("Controlador?menu?Proveedor&accion=Listar").forward(request, response);
                             break;
+                            
+                        case "Editar":
+                            int codProveedor = Integer.parseInt(request.getParameter("codigoProveedor"));
+                            Proveedor p = proveedorDAO.listarCodigoProveedor(codProveedor);
+                            request.setAttribute("proveedor", p);
+
+                            List listaProveedoresEditar = proveedorDAO.listar();
+                            request.setAttribute("proveedores", listaProveedoresEditar);
+
+                            request.getRequestDispatcher("proveedor.jsp").forward(request, response);
+                            break;
+                            
+                        case "Actualizar":
+                            int codProveedorActualizar = Integer.parseInt(request.getParameter("txtCodigoProveedor"));
+                            nombreProveedor = request.getParameter("txtNombreProveedor");
+                            direccionProveedor = request.getParameter("txtDireccionProveedor");
+                            telefonoProveedor = request.getParameter("txtTelefonoProveedor");
+                            correoProveedor = request.getParameter("txtCorreoProveedor");
+
+                            proveedor.setCodigoProveedor(codProveedorActualizar);
+                            proveedor.setNombreProveedor(nombreProveedor);
+                            proveedor.setDireccionProveedor(direccionProveedor);
+                            proveedor.setTelefonoProveedor(telefonoProveedor);
+                            proveedor.setCorreoProveedor(correoProveedor);
+
+                            proveedorDAO.actualizar(proveedor);
+                            request.getRequestDispatcher("Controlador?menu=Proveedor&accion=Listar").forward(request, response);
+                            break;
+                          
+                        case "Eliminar":
+                            codProveedor = Integer.parseInt(request.getParameter("codigoProveedor"));
+
+                            proveedorDAO.eliminar(codProveedor);
+
+                            request.getRequestDispatcher("Controlador?menu=Proveedor&accion=Listar").forward(request, response);
+                            break;
                         default:
                             throw new AssertionError();
                     }

@@ -2,19 +2,13 @@ package Modelo;
  
  
 public class Proveedor {
- 
     private int codigoProveedor;
- 
     private String nombreProveedor;
- 
     private String direccionProveedor;
- 
     private String telefonoProveedor;
- 
     private String correoProveedor;
- 
+    
     public Proveedor() {
- 
     }
  
     public Proveedor(String nombreProveedor, String direccionProveedor, String telefonoProveedor, String correoProveedor) {

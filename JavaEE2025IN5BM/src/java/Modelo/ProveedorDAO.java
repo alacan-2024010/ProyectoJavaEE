@@ -3,7 +3,7 @@ package Modelo;
 import Config.Conexion;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet   ;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
  
@@ -64,7 +64,64 @@ public class ProveedorDAO {
         }
         return resp;
     }
+    
+    //Metodo para actualizar el proveedor
+    public int actualizar(Proveedor prov) {
+        String sql = "call sp_EditarProveedor(?,?,?,?,?)";
+        try {
+            con = cn.Conexion();
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, prov.getCodigoProveedor());
+            ps.setString(2, prov.getNombreProveedor());
+            ps.setString(3, prov.getDireccionProveedor());
+            ps.setString(4, prov.getTelefonoProveedor());
+            ps.setString(5, prov.getCorreoProveedor());
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return resp;
+    }
+
+    
+    //Metodo para eliminar el proveedor
+    public void eliminar(int id) {
+        String sql = "call sp_EliminarProveedor(?)";
+        try {
+            con = cn.Conexion();
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public Proveedor listarCodigoProveedor(int id) {
+        Proveedor prov = new Proveedor();
+        String sql = "call sp_BuscarProveedor(?);";
+
+        try {
+            con = cn.Conexion();
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, id);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                prov.setCodigoProveedor(rs.getInt(1));
+                prov.setNombreProveedor(rs.getString(2));
+                prov.setDireccionProveedor(rs.getString(3));
+                prov.setTelefonoProveedor(rs.getString(4));
+                prov.setCorreoProveedor(rs.getString(5));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return prov;
+    }
+    
+    
+    
+    
 }
- 
- 
- 
