@@ -1,91 +1,61 @@
-
 package Modelo;
 
-import java.math.BigDecimal;
-import javax.persistence.*;
-import java.util.List;
-import java.util.Scanner;
- 
-@Entity
-@Table(name = "detalleCompras")
-public class detalleCompra {
- 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int codigodetalleCompra;
- 
-    @Column
+public class DetalleCompra {
+    private int codigoDetalleCompra;
     private int cantidad;
+    private double precioUnitario;
+    private int codigoCompra;
+    private int codigoProducto;
+
  
-    @Column
-    private BigDecimal precioUnitario;
- 
-    @ManyToOne
-    @JoinColumn(name = "codigoCompra")
-    private Compra  codigoCompra;
- 
-    @ManyToOne
-    @JoinColumn(name = "codigoProducto")
-    private Producto codigoProducto;
- 
-    public detalleCompra() {
+    public DetalleCompra() {
     }
- 
-    public detalleCompra(int cantidad, BigDecimal precioUnitario, Compra codigoCompra, Producto codigoProducto) {
+
+    
+    public DetalleCompra(int cantidad, double precioUnitario, int codigoCompra, int codigoProducto) {
         this.cantidad = cantidad;
         this.precioUnitario = precioUnitario;
         this.codigoCompra = codigoCompra;
         this.codigoProducto = codigoProducto;
     }
- 
-    public int getCodigodetalleCompra() {
-        return codigodetalleCompra;
+
+    public int getCodigoDetalleCompra() {
+        return codigoDetalleCompra;
     }
- 
-    public void setCodigodetalleCompra(int codigodetalleCompra) {
-        this.codigodetalleCompra = codigodetalleCompra;
+
+    public void setCodigoDetalleCompra(int codigoDetalleCompra) {
+        this.codigoDetalleCompra = codigoDetalleCompra;
     }
- 
+
     public int getCantidad() {
         return cantidad;
     }
- 
+
     public void setCantidad(int cantidad) {
         this.cantidad = cantidad;
     }
- 
-    public BigDecimal getPrecioUnitario() {
+
+    public double getPrecioUnitario() {
         return precioUnitario;
     }
- 
-    public void setPrecioUnitario(BigDecimal precioUnitario) {
+
+    public void setPrecioUnitario(double precioUnitario) {
         this.precioUnitario = precioUnitario;
     }
- 
-    public Compra  getCodigoCompra() {
+
+    public int getCodigoCompra() {
         return codigoCompra;
     }
- 
-    public void setCodigoCompra(Compra codigoCompra) {
+
+    public void setCodigoCompra(int codigoCompra) {
         this.codigoCompra = codigoCompra;
     }
- 
-    public Producto getCodigoProducto() {
+
+    public int getCodigoProducto() {
         return codigoProducto;
     }
- 
-    public void setCodigoProducto(Producto codigoProducto) {
+
+    public void setCodigoProducto(int codigoProducto) {
         this.codigoProducto = codigoProducto;
     }
- 
-    @Override
-    public String toString() {
-        return "detalleCompra{" +
-                "codigoDetalleCompra=" + codigodetalleCompra +
-                ", cantidad=" + cantidad +
-                ", precioUnitario=" + precioUnitario +
-                ", codigoCompra=" + codigoCompra +
-                ", codigoProducto=" + codigoProducto +
-                '}';
-    }
- }
+}

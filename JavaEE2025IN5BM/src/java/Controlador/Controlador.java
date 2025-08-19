@@ -7,6 +7,8 @@ package Controlador;
 import Modelo.Categoria;
 import Modelo.Cliente;
 import Modelo.ClienteDAO;
+import Modelo.DetalleCompraDAO;
+import Modelo.DetalleCompra;
 import Modelo.DetalleVenta;
 import Modelo.DetalleVentaDAO;
 import Modelo.EmpleadoDAO;
@@ -54,6 +56,9 @@ public class Controlador extends HttpServlet {
     VentaDAO ventaDAO = new VentaDAO();
     DetalleVenta detalleVenta = new DetalleVenta();
     DetalleVentaDAO detalleVentaDAO = new DetalleVentaDAO();
+    DetalleCompra detalleCompra = new DetalleCompra();
+    DetalleCompraDAO detalleCompraDAO = new DetalleCompraDAO();
+
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -369,9 +374,32 @@ public class Controlador extends HttpServlet {
                                 case "Compra":
                                     request.getRequestDispatcher("compras.jsp").forward(request, response);
                                     break;
-                                case "DetalleCompra":
-                                    request.getRequestDispatcher("detalleCompra.jsp").forward(request, response);
-                                    break;
+                               case "DetalleCompra":
+                        switch (accion) {
+                            case "Listar":
+                                List listaDetalleCompra = detalleCompraDAO.listar();
+                                request.setAttribute("detalleCompras", listaDetalleCompra);
+                                break;
+                            case "Agregar":
+            String cantidadStr = request.getParameter("txtCantidad");
+            String precioUnitarioStr = request.getParameter("txtPrecio");
+            String codCompra = request.getParameter("txtCodigoCompra");
+            String codProducto = request.getParameter("txtCodigoProducto");
+
+            detalleCompra.setCantidad(Integer.parseInt(cantidadStr));
+            detalleCompra.setPrecioUnitario(Double.parseDouble(precioUnitarioStr));
+            detalleCompra.setCodigoCompra(Integer.parseInt(codCompra));
+            detalleCompra.setCodigoProducto(Integer.parseInt(codProducto));
+
+            detalleCompraDAO.agregar(detalleCompra);
+            request.getRequestDispatcher("Controlador?menu=DetalleCompra&accion=Listar").forward(request, response);
+            break;
+
+        default:
+            throw new AssertionError();
+    }
+                        request.getRequestDispatcher("detalleCompra.jsp").forward(request, response);
+                        break;
                                 case "Cambiar":
                                     request.getRequestDispatcher("principal.jsp").forward(request, response);
                                     break;

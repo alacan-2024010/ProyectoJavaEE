@@ -3,7 +3,7 @@
     Created on : 22/07/2025, 17:57:26
     Author     : danny
 --%>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="es">
@@ -23,30 +23,32 @@
 
     <div class="contenedor-principal">
 
-        <!-- Panel Formulario -->
+  
+       
         <div class="panel-formulario">
             <h1>Gestión de Detalle de Compras</h1>
-            <form action="" method="post" class="formulario">
-                <input type="text" name="txtCodigoDetalleCompra" placeholder="Cantidad" >
-                <input type="text" name="txtCantidad" placeholder="Cantidad" required>
-                <input type="text" name="txtPrecio" placeholder="Precio Unitario" required>
-                <input type="text" name="txtCodigoCompra" placeholder="Codigo Compra" required>
-                <input type="text" name="txtCodigoProducto" placeholder="Codigo Producto" required>
+            <form action="Controlador?menu=DetalleCompra" method="post" class="formulario">
 
+                <input type="text" autocomplete="off" value="${detalleCompra.getCodigoDetalleCompra()}" name="txtCodigoDetalleCompra" placeholder="Código Detalle Compra" />
+                <input type="text" autocomplete="off" value="${detalleCompra.getCantidad()}" name="txtCantidad" placeholder="Cantidad" required />
+                <input type="text" autocomplete="off" value="${detalleCompra.getPrecioUnitario()}" name="txtPrecio" placeholder="Precio Unitario" required />
+                <input type="text" autocomplete="off" value="${detalleCompra.getCodigoCompra()}" name="txtCodigoCompra" placeholder="Código Compra" required />
+                <input type="text" autocomplete="off" value="${detalleCompra.getCodigoProducto()}" name="txtCodigoProducto" placeholder="Código Producto" required />
                 <div class="botones">
-                    <button type="submit" name="btnAgregar">Agregar</button>
-                    <button type="submit" name="btnActualizar">Actualizar</button>
-                    <button type="submit" name="btnBuscar">Buscar</button>
-                    <button type="submit" name="btnEliminar" class="eliminar">Eliminar</button>
+                    <button type="submit" name="accion" value="agregar">Agregar</button>
+                    <button type="submit" name="accion" value="actualizar"> Actualizar</button>
+                    <button type="submit" name="accion" value="buscar">Buscar</button>
+                    <button type="submit" name="accion" value="eliminar">Eliminar</button>
                 </div>
-
+                 </form>
                 <div class="marca-interna">
                     Essenza & Co.
                 </div>
             </form>
         </div>
 
-        <!-- Panel Tabla -->
+
+        
         <div class="panel-tabla">
             <div class="tabla-contenedor">
                 <table class="tabla">
@@ -60,10 +62,17 @@
                         </tr>
                     </thead>
                     <tbody>
+                    <c:forEach var="detalleCompra" items="${detalleCompras}">
                         <tr>
-                  
+                            <td>${detalleCompra.codigoDetalleCompra}</td>
+                            <td>${detalleCompra.cantidad}</td>
+                            <td>${detalleCompra.precioUnitario}</td>
+                            <td>${detalleCompra.codigoCompra}</td>
+                            <td>${detalleCompra.codigoProducto}</td>
                         </tr>
-                    </tbody>
+                    </c:forEach>
+                </tbody>
+
                 </table>
             </div>
         </div>

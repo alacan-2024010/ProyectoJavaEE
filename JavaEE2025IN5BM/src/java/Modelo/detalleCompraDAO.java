@@ -1,65 +1,55 @@
-
 package Modelo;
 
-import javax.persistence.*;
+import Config.Conexion;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 
-public class detalleCompraDAO {
+public class DetalleCompraDAO {
 
-    private EntityManagerFactory emf;
-    private EntityManager em;
+    Conexion cn = new Conexion();
+    Connection con;
+    PreparedStatement ps;
+    ResultSet rs;
+    int resp;
 
-    public detalleCompraDAO() {
-        emf = Persistence.createEntityManagerFactory("dominio");
-        em = emf.createEntityManager();
-    }
-
-    public void crearDetalleCompra(detalleCompra detalle) {
+    public List<DetalleCompra> listar() {
+        List<DetalleCompra> listaDetalle = new ArrayList<>();
+        String sql = "call sp_listarDetalleCompras()";
         try {
-            em.getTransaction().begin();
-            em.persist(detalle); 
-            em.getTransaction().commit();
-        } catch (Exception e) {
-            em.getTransaction().rollback();
-            e.printStackTrace();
-        }
-    }
-
-    public detalleCompra buscarDetalleCompra(int codigoDetalleCompra) {
-        return em.find(detalleCompra.class, codigoDetalleCompra);
-    }
-
-    public void actualizarDetalleCompra(detalleCompra detalle) {
-        try {
-            em.getTransaction().begin();
-            em.merge(detalle);
-            em.getTransaction().commit();
-        } catch (Exception e) {
-            em.getTransaction().rollback();
-            e.printStackTrace();
-        }
-    }
-
-    public void eliminarDetalleCompra(int codigoDetalleCompra) {
-        try {
-            detalleCompra detalle = em.find(detalleCompra.class, codigoDetalleCompra);
-            if (detalle != null) {
-                em.getTransaction().begin();
-                em.remove(detalle); 
-                em.getTransaction().commit();
+            con = cn.Conexion();
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                DetalleCompra dc = new DetalleCompra();
+                dc.setCodigoDetalleCompra(rs.getInt(1));
+                dc.setCantidad(rs.getInt(2));
+                dc.setPrecioUnitario(rs.getDouble(3));
+                dc.setCodigoCompra(rs.getInt(4));
+                dc.setCodigoProducto(rs.getInt(5));
+                listaDetalle.add(dc);
             }
         } catch (Exception e) {
-            em.getTransaction().rollback();
             e.printStackTrace();
         }
+        return listaDetalle;
     }
 
-    public List<detalleCompra> listarDetalleCompras() {
-        return em.createQuery("SELECT d FROM detalleCompra d", detalleCompra.class).getResultList();
-    }
-
-    public void cerrar() {
-        em.close();
-        emf.close();
+    public int agregar(DetalleCompra dc) {
+        String sql = "call sp_agregarDetalleCompra(?,?,?,?)";
+        try {
+            con = cn.Conexion();
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, dc.getCantidad());
+            ps.setDouble(2, dc.getPrecioUnitario());
+            ps.setInt(3, dc.getCodigoCompra());
+            ps.setInt(4, dc.getCodigoProducto());
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return resp;
     }
 }
