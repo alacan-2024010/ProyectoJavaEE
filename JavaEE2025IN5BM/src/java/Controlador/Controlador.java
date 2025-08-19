@@ -84,7 +84,31 @@ public class Controlador extends HttpServlet {
                         request.getRequestDispatcher("cliente.jsp").forward(request, response);
                         break;
                     case "Proveedor":
-                        
+                        switch (accion) {
+                            case "Listar":
+                                List listaProveedores = proveedorDAO.listar();
+                                request.setAttribute("proveedores", listaProveedores);
+                                break;
+                            case "Agregar":
+                                String nombreProveedor = request.getParameter("txtNombreProveedor");
+                                String direccionProveedor = request.getParameter("txtDireccionProveedor");
+                                String telefonoProveedor = request.getParameter("txtTelefonoProveedor");
+                                String correoProveedor = request.getParameter("txtCorreoProveedor");
+
+                                proveedor.setNombreProveedor(nombreProveedor);
+                                proveedor.setDireccionProveedor(direccionProveedor);
+                                proveedor.setTelefonoProveedor(telefonoProveedor);
+                                proveedor.setCorreoProveedor(correoProveedor);
+
+                                proveedorDAO.agregar(proveedor);
+                                request.getRequestDispatcher("Controlador?menu?Proveedor&accion=Listar").forward(request, response);
+                                break;
+                            default:
+                                throw new AssertionError();
+                        }
+
+                        request.getRequestDispatcher("proveedor.jsp").forward(request, response);
+                        break;
                     case "Producto":
                         request.getRequestDispatcher("producto.jsp").forward(request, response);
                         break;
