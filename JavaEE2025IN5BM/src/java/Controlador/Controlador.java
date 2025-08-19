@@ -100,10 +100,29 @@ public class Controlador extends HttpServlet {
                             request.getRequestDispatcher("Controlador?menu=Cliente&accion=Listar").forward(request, response);
                             break;
                         case "Editar":
+                            int codigo = Integer.parseInt(request.getParameter("codigoCliente"));
+                                Cliente c = clienteDAO.listarCodigoPorCliente(codigo);
+                                request.setAttribute("cliente", c);
+                                 request.getRequestDispatcher("Controlador?menu=Cliente&accion=Listar").forward(request,response);
                             break;
                         case "Actualizar":
-                            break;
+                                int codigoC = Integer.parseInt(request.getParameter("txtCodigoCliente"));
+                                String nombreC = request.getParameter("txtNombreCliente");
+                                String apellidoC = request.getParameter("txtApellidoCliente");
+                                String correoC = request.getParameter("txtCorreoCliente");
+                                String contraC = request.getParameter("txtContraseniaCliente");
+                                cliente.setCodigoCliente(codigoC);
+                                cliente.setNombreCliente(nombreC);
+                                cliente.setApellidoCliente(apellidoC);
+                                cliente.setEmailCliente(correoC);
+                                cliente.setContrasenia(contraC);
+                                clienteDAO.actualizar(cliente);
+                                request.getRequestDispatcher("Controlador?menu=Cliente&accion=Listar").forward(request,response);                               
+                                break;
                         case "Eliminar":
+                            codigoC = Integer.parseInt(request.getParameter("codigoCliente"));
+                            clienteDAO.eliminar(codigoC);
+                            request.getRequestDispatcher("Controlador?menu=Cliente&accion=Listar").forward(request,response);
                             break;
                         case "Buscar":
                             break;

@@ -34,8 +34,6 @@ Author     : Francisco
                     <div class="botones">
                         <button type="submit" name="accion" value="Agregar">Agregar</button>
                         <button type="submit" name="accion" value="Actualizar">Actualizar</button>
-                        <button type="submit" name="accion" value="Buscar">Buscar</button>
-                        <button type="submit" name="accion" value="Eliminar" class="eliminar">Eliminar</button>
                     </div>
                     <div class="marca-interna">
                         Essenza & Co.
@@ -54,6 +52,7 @@ Author     : Francisco
                                 <th>Apellido</th>
                                 <th>Correo</th>
                                 <th>Contraseña</th>
+                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -64,6 +63,10 @@ Author     : Francisco
                                         <td>${cliente.getApellidoCliente()}</td>
                                         <td>${cliente.getEmailCliente()}</td>
                                         <td>${cliente.getContrasenia()}</td>
+                                         <td>
+                                            <a href="Controlador?menu=Cliente&accion=Editar&codigoCliente=${cliente.getCodigoCliente()}" class="btn editar">Editar</a>
+                                            <a href="Controlador?menu=Cliente&accion=Eliminar&codigoCliente=${cliente.getCodigoCliente()}" class="btn eliminar">Eliminar</a>
+                                        </td>
                                  </tr>
                             </c:forEach>
                         </tbody>
