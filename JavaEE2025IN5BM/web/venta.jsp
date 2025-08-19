@@ -3,6 +3,7 @@
     Created on : 22/07/2025, 17:34:01
     Author     : Titi
 --%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="es">
@@ -19,12 +20,14 @@
     <div class="contenedor-principal">
         <div class="panel-formulario">
             <h1>Gestión de Ventas</h1>
-            <form action="" method="post" class="formulario">
-                <input type="text" name="txtIdVenta" placeholder="ID de venta" required />
-                <input type="datetime-local" name="txtFecha" placeholder="Fecha" required />
-                <input type="text" name="txtTotal" placeholder="Total" required />
-                <input type="number" name="txtIdCliente" placeholder="ID Cliente" required />
-                <input type="number" name="txtIdEmpleado" placeholder="ID Empleado" required />
+                <form action="Controlador?menu=Venta" method="POST" class="formulario">
+
+                    <input type="text" autocomplete="off" value="${venta.getCodigoVenta()}" id="txtCodigoVenta" name="txtCodigoVenta" class="input" placeholder="ID de la Venta" />
+                    <input type="datetime-local" autocomplete="off" value="${venta.getFecha()}" id="txtFecha" name="txtFecha" class="input" placeholder="Fecha" required/>
+                    <input type="text" autocomplete="off" value="${venta.getTotal()}" id="txtTotal" name="txtTotal" class="input" placeholder="Total" required/>
+                    <input type="text" autocomplete="off" value="${venta.getCodCliente()}" id="txtCodigoCliente" name="txtCodigoCliente" class="input" placeholder="Codigo De Cliente" required/>
+                    <input type="text" autocomplete="off" value="${venta.getCodEmpleado()}" id="txtCodigoEmpleado" name="txtCodigoEmpleado" class="input" placeholder="Código de Empleado" required/>
+
                 <div class="botones">
                     <button>Agregar</button>
                     <button>Actualizar</button>
@@ -48,8 +51,17 @@
                             <th>ID Empleado</th>
                         </tr>
                     </thead>
-                    <tbody>
-                    </tbody>
+                        <tbody>
+                        <c:forEach var="venta" items="${ventas}">
+                            <tr>
+                                <td>${venta.codigoVenta}</td>
+                                <td>${venta.fecha}</td>
+                                <td>${venta.total}</td>
+                                <td>${venta.codCliente.codigoCliente}</td>
+                                <td>${venta.codEmpleado.codigoEmpleado}</td>
+                            </tr>
+                        </c:forEach>
+                        </tbody>
                 </table>
             </div>
         </div>

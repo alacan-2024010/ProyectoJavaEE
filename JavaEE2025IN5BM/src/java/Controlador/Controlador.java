@@ -49,6 +49,7 @@ public class Controlador extends HttpServlet {
     Factura factura = new Factura();
     FacturaDAO facturaDAO = new FacturaDAO();
     Venta venta = new Venta();
+    VentaDAO ventaDAO = new VentaDAO();
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -261,7 +262,44 @@ public class Controlador extends HttpServlet {
         
     
 
-case "Venta":
+                        case "Venta":
+                            switch (accion) {
+                        case "Listar":
+                            List listaVenta = ventaDAO.listar();
+                            request.setAttribute("ventas", listaVenta);
+                            break;
+                        case "Agregar":
+                            String fecha = request.getParameter("txtFecha");
+
+                            String total = request.getParameter("txtTotal");
+                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+                            LocalDateTime fechaEmision = LocalDateTime.parse(fecha, formatter);
+
+                            String codCliente = request.getParameter("txtCodigoCliente");
+                            String codEmpleado = request.getParameter("txtCodigoEmpleado");
+
+                            venta.setFecha(fechaEmision);
+                            venta.setTotal(BigDecimal.valueOf(Double.parseDouble(total)));
+
+                            cliente.setCodigoCliente(Integer.parseInt(codCliente));
+                            venta.setCodCliente(cliente);
+                            empleado.setCodigoEmpleado(Integer.parseInt(codEmpleado));
+                            venta.setCodEmpleado(empleado);
+
+                            ventaDAO.agregar(venta);
+                            request.getRequestDispatcher("Controlador?menu?Venta&accion=Listar").forward(request, response);
+                            break;
+                        case "Editar":
+                            break;
+                        case "Actualizar":
+                            break;
+                        case "Eliminar":
+                            break;
+                        case "Buscar":
+                            break;
+                        default:
+                            throw new AssertionError();
+                    }
                             request.getRequestDispatcher("venta.jsp").forward(request, response);
                             break;
                         case "DetalleVenta":

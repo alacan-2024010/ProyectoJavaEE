@@ -1,72 +1,70 @@
 
 package Modelo;
 
+import Config.Conexion;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+
 
 public class VentaDAO {
-    private EntityManagerFactory emf;
-
-    private EntityManager em;
- 
-    public VentaDAO() {
-        emf = Persistence.createEntityManagerFactory("dominio");
-        em = emf.createEntityManager();
-    }
     
-    public void crearVenta(Venta venta) {
+    Conexion cn= new Conexion();
+    Connection con;
+    PreparedStatement ps;
+    ResultSet rs;
+    int resp;
+    public List listar(){
+        String sql = "call sp_ListarVentas()";
+        List<Venta> listaVenta = new ArrayList<>();
+        
         try {
-            em.getTransaction().begin();
-            em.persist(venta); 
-            em.getTransaction().commit();
-        } catch (Exception e) {
-            em.getTransaction().rollback();
-            e.printStackTrace();
-        }
-
-    }
- 
-    public Venta buscarVenta(int codigoVenta) {
-        return em.find(Venta.class, codigoVenta);
-    }
-    
-    
-    public void actualizarVenta(Venta venta) {
-        try {
-            em.getTransaction().begin();
-            em.merge(venta);
-            em.getTransaction().commit();
-        } catch (Exception e) {
-            em.getTransaction().rollback();
-            e.printStackTrace();
-        }
-    }
- 
-    public void eliminarVenta(int codigoVenta) {
-
-        try {
-           Venta venta = em.find(Venta.class, codigoVenta);
-            if (venta != null) {
-                em.getTransaction().begin();
-                em.remove(venta); 
-                em.getTransaction().commit();
+            con = cn.Conexion();
+            ps= con.prepareStatement(sql);
+            rs= ps.executeQuery();
+            
+            while (rs.next()) {
+                Venta prov = new Venta();
+                Cliente cl = new Cliente();
+                Empleado em = new Empleado();
+                
+                prov.setCodigoVenta(rs.getInt(1));
+                prov.setFecha(rs.getTimestamp(2).toLocalDateTime());
+                prov.setTotal(rs.getBigDecimal(3));
+                cl.setCodigoCliente(rs.getInt(4));
+                em.setCodigoEmpleado(rs.getInt(5));
+                listaVenta.add(prov);
             }
-
+            
         } catch (Exception e) {
-            em.getTransaction().rollback();
             e.printStackTrace();
         }
+        return listaVenta;
     }
- 
-    public List<Venta> listarVenta() {
-        return em.createQuery("SELECT v FROM Venta v", Venta.class).getResultList();
+     public int agregar(Venta ven){
+        //Llamar al procedimiento almacenado
+        String sql= "call sp_AgregarVenta(?,?,?,?)";
+        
+        try {
+            //Conectar a la base de datos para preparar la consulta
+            con = cn.Conexion();
+            ps=con.prepareStatement(sql);
+            
+            //Los parametros del procedimiento
+            ps.setTimestamp(1, Timestamp.valueOf(ven.getFecha()));
+            ps.setBigDecimal(2, ven.getTotal());
+            ps.setInt(3, ven.getCodCliente().getCodigoCliente());
+            ps.setInt(4, ven.getCodEmpleado().getCodigoEmpleado());
+            
+
+            
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return resp;
     }
- 
-    public void cerrar() {
-        em.close();
-        emf.close();
-    }
- 
 }

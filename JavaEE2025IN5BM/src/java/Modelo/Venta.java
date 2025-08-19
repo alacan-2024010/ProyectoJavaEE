@@ -3,35 +3,34 @@ package Modelo;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+
+
+
 
 
 public class Venta {
+
     private int codigoVenta ;
+
     private LocalDateTime  fecha;
     private BigDecimal total;
-    private Cliente cliente;
-    private Empleado empleado;
+
+    private Cliente codCliente;
+
+    private Empleado codEmpleado;
     
     
     public Venta() {
     }
 
-    public Venta(LocalDateTime  fecha, BigDecimal total, int codigoCliente, int codigoEmpleado) {
+    public Venta(int codigoVenta, LocalDateTime fecha, BigDecimal total, Cliente codCliente, Empleado codEmpleado) {
         this.codigoVenta = codigoVenta;
         this.fecha = fecha;
         this.total = total;
+        this.codCliente = codCliente;
+        this.codEmpleado = codEmpleado;
     }
 
-    
-    
     public int getCodigoVenta() {
         return codigoVenta;
     }
@@ -40,11 +39,11 @@ public class Venta {
         this.codigoVenta = codigoVenta;
     }
 
-    public LocalDateTime  getFecha() {
+    public LocalDateTime getFecha() {
         return fecha;
     }
 
-    public void setFecha(LocalDateTime  fecha) {
+    public void setFecha(LocalDateTime fecha) {
         this.fecha = fecha;
     }
 
@@ -56,29 +55,24 @@ public class Venta {
         this.total = total;
     }
 
-    public Cliente getCliente() {
-        return cliente;
+    public Cliente getCodCliente() {
+        return codCliente;
     }
 
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
+    public void setCodCliente(Cliente codCliente) {
+        this.codCliente = codCliente;
     }
 
-    public Empleado getEmpleado() {
-        return empleado;
+    public Empleado getCodEmpleado() {
+        return codEmpleado;
     }
 
-    public void setEmpleado(Empleado empleado) {
-        this.empleado = empleado;
+    public void setCodEmpleado(Empleado codEmpleado) {
+        this.codEmpleado = codEmpleado;
     }
 
-    @Override
-    public String toString() {
-        return "Venta{" + "codigoVenta=" + codigoVenta + ", fecha=" + fecha + ", total=" + total + ", cliente=" + cliente + ", empleado=" + empleado + '}';
-    }
+
 
    
     
 }
-
-
