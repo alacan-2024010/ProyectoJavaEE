@@ -4,6 +4,8 @@
  */
 package Controlador;
 
+import Modelo.Cliente;
+import Modelo.ClienteDAO;
 import Modelo.Empleado;
 import Modelo.EmpleadoDAO;
 import Modelo.Proveedor;
@@ -21,6 +23,8 @@ import javax.servlet.http.HttpServletResponse;
  * @author informatica
  */
 public class Controlador extends HttpServlet {
+    Cliente cliente = new Cliente();
+    ClienteDAO clienteDAO = new ClienteDAO();
     Empleado empleado = new Empleado();
     EmpleadoDAO empleadoDAO = new EmpleadoDAO();
     Proveedor proveedor = new Proveedor();
@@ -49,25 +53,22 @@ public class Controlador extends HttpServlet {
             if(menu!=null){
                 switch (menu) {
                     case "Cliente":
-                        request.getRequestDispatcher("cliente.jsp").forward(request, response);
-                        break;
-                    case "Proveedor":
                         switch (accion) {
                             case "Listar":
-                                List listaProveedor = proveedorDAO.listar();
-                                request.setAttribute("proveedores", listaProveedor);
+                                List listaClientes = clienteDAO.listar();
+                                request.setAttribute("clientes", listaClientes);
                                 break;
                             case "Agregar":
-                                String nombre = request.getParameter("txtNombreProveedor");
-                                String direccion = request.getParameter("txtDireccion");
-                                String celular = request.getParameter("txtCelular");
-                                String correo = request.getParameter("txtCorreo");
-                                proveedor.setNombreProveedor(nombre);
-                                proveedor.setDireccionProveedor(direccion);
-                                proveedor.setTelefonoProveedor(celular);
-                                proveedor.setCorreoProveedor(correo);
-                                proveedorDAO.agregar(proveedor);
-                                request.getRequestDispatcher("Controlador?menu=Proveedor&accion=Listar").forward(request,response);
+                                String nombre = request.getParameter("txtNombreCliente");
+                                String apellido = request.getParameter("txtApellidoCliente");
+                                String correo = request.getParameter("txtCorreoCliente");
+                                String contra = request.getParameter("txtContraseniaCliente");
+                                cliente.setNombreCliente(nombre);
+                                cliente.setApellidoCliente(apellido);
+                                cliente.setEmailCliente(correo);
+                                cliente.setContrasenia(contra);
+                                clienteDAO.agregar(cliente);
+                                request.getRequestDispatcher("Controlador?menu=Cliente&accion=Listar").forward(request,response);
                                 break;
                             case "Editar":
                                 break;
@@ -80,8 +81,10 @@ public class Controlador extends HttpServlet {
                             default:
                                 throw new AssertionError();
                         }
-                        request.getRequestDispatcher("proveedor.jsp").forward(request, response);
+                        request.getRequestDispatcher("cliente.jsp").forward(request, response);
                         break;
+                    case "Proveedor":
+                        
                     case "Producto":
                         request.getRequestDispatcher("producto.jsp").forward(request, response);
                         break;

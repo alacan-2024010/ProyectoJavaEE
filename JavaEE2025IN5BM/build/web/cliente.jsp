@@ -4,6 +4,7 @@ Created on : 22/07/2025, 16:46:08
 Author     : Francisco
 --%>
 
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
@@ -24,18 +25,17 @@ Author     : Francisco
         <div class="contenedor-principal">
             <div class="panel-formulario">
                 <h1>Gestión de Clientes</h1>
-                <form action=""method="post" class="formulario">
-                    <input type="text" name="txtCodigoCliente" placeholder="Codigo del cliente" />
-                    <input type="text" name="txtNombreCliente" placeholder="Nombre del Cliente" />
-                    <input type="text" name="txtApellidoCliente" placeholder="Apellido del Cliente" />
-                    <input type="text" name="txtCorreoCliente" placeholder="Correo del Cliente" />
-                    <input type="text" name="txtContraseniaCliente" placeholder="Contraseña" />
-                    <input type="text" name="txtImagen" placeholder="(Solo poner '' o null)" />
+                 <form action="Controlador?menu=Cliente" method="POST" class="formulario">
+                    <input type="text" autocomplete="off" value="${cliente.getCodigoCliente()}" name="txtCodigoCliente" placeholder="Codigo del cliente" />
+                    <input type="text" autocomplete="off" value="${cliente.getNombreCliente()}" name="txtNombreCliente" placeholder="Nombre del Cliente" required/>
+                    <input type="text" autocomplete="off" value="${cliente.getApellidoCliente()}" name="txtApellidoCliente" placeholder="Apellido del Cliente"required />
+                    <input type="text" autocomplete="off" value="${cliente.getEmailCliente()}"name="txtCorreoCliente" placeholder="Correo del Cliente"required />
+                    <input type="text" autocomplete="off" value="${cliente.getContrasenia()}"name="txtContraseniaCliente" placeholder="Contraseña" required/>
                     <div class="botones">
-                        <button>Agregar</button>
-                        <button>Actualizar</button>
-                        <button >Buscar</button>
-                        <button class="eliminar">Eliminar</button>
+                        <button type="submit" name="accion" value="Agregar">Agregar</button>
+                        <button type="submit" name="accion" value="Actualizar">Actualizar</button>
+                        <button type="submit" name="accion" value="Buscar">Buscar</button>
+                        <button type="submit" name="accion" value="Eliminar" class="eliminar">Eliminar</button>
                     </div>
                     <div class="marca-interna">
                         Essenza & Co.
@@ -56,6 +56,17 @@ Author     : Francisco
                                 <th>Contraseña</th>
                             </tr>
                         </thead>
+                        <tbody>
+                            <c:forEach var="cliente" items="${clientes}">
+                                <tr>
+                                        <td>${cliente.getCodigoCliente()}</td>
+                                        <td>${cliente.getNombreCliente()}</td>
+                                        <td>${cliente.getApellidoCliente()}</td>
+                                        <td>${cliente.getEmailCliente()}</td>
+                                        <td>${cliente.getContrasenia()}</td>
+                                 </tr>
+                            </c:forEach>
+                        </tbody>
                     </table>
                 </div> 
             </div> 
