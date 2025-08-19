@@ -6,17 +6,19 @@ package Controlador;
 
 import Modelo.Cliente;
 import Modelo.ClienteDAO;
-import Modelo.Empleado;
 import Modelo.EmpleadoDAO;
 import Modelo.Proveedor;
 import Modelo.ProveedorDAO;
+import com.alanlacan.modelo.Empleado;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.InputStream;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 
 /**
  *
@@ -26,10 +28,10 @@ public class Controlador extends HttpServlet {
     Cliente cliente = new Cliente();
     ClienteDAO clienteDAO = new ClienteDAO();
     Empleado empleado = new Empleado();
-    EmpleadoDAO empleadoDAO = new EmpleadoDAO();
+    EmpleadoDAO empleadoDao = new EmpleadoDAO();
+    int codEmpleado;
     Proveedor proveedor = new Proveedor();
     ProveedorDAO proveedorDAO = new ProveedorDAO();
-    int codEmpleado;
     
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -115,35 +117,93 @@ public class Controlador extends HttpServlet {
                     case "Empleado":
                          switch (accion) {
                             case "Listar":
-                                List listaEmpleado = empleadoDAO.listar();
-                                request.setAttribute("empleados", listaEmpleado);
-                                break;
-                            case "Agregar":
-                                String nombre = request.getParameter("txtNombreEmpleado");
-                                String apellido = request.getParameter("txtApellidoEmpleado");
-                                String direccion = request.getParameter("txtDireccion");
-                                String telefono = request.getParameter("txtTelefono");
-                                String correo = request.getParameter("txtCorreoElectronico");
-                                String puesto = request.getParameter("txtPuesto");
-                                empleado.setNombreEmpleado(nombre);
-                                empleado.setApellidoEmpleado(apellido);
-                                empleado.setDireccionEmpleado(direccion);
-                                empleado.setTelefonoEmpleado(telefono);
-                                empleado.setEmailEmpleado(correo);
-                                empleado.setPuestoEmpleado(puesto);
-                                empleadoDAO.agregar(empleado);
-                                request.getRequestDispatcher("Controlador?menu=Empleado&accion=Listar").forward(request,response);
+                    List listaEmpleados = empleadoDao.listar();
+                    request.setAttribute("empleados", listaEmpleados);
+                    break;
+                case "Agregar":
+                    try {
+                        String nombre = request.getParameter("txtNombre");
+                        String apellido = request.getParameter("txtApellido");
+                        String direccion = request.getParameter("txtDireccion");
+                        String telefono = request.getParameter("txtTelefono");
+                        String correo = request.getParameter("txtCorreo");
+                        String puesto = request.getParameter("txtPuesto");
+                        Part filePart = request.getPart("txtImagen");
+                        
+                        InputStream inputStream = filePart.getInputStream();
+                        byte[] imagenBytes;
+                        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+                            byte[] buffer = new byte[4096];
+                            int bytesRead;
+                            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                                outputStream.write(buffer, 0, bytesRead);
+                            }
+                            imagenBytes = outputStream.toByteArray();
+                        }
+                        
+                        empleado.setNombreEmpleado(nombre);
+                        empleado.setApellidoEmpleado(apellido);
+                        empleado.setDireccionEmpleado(direccion);
+                        empleado.setTelefonoEmpleado(telefono);
+                        empleado.setEmailEmpleado(correo);
+                        empleado.setPuestoEmpleado(puesto);
+                        empleado.setImagenPerfil(imagenBytes);
+                        
+                        empleadoDao.agregar(empleado);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                request.getRequestDispatcher("Controlador?menu=Empleado&accion=Listar").forward(request, response);
                                 break;
                             case "Editar":
+                                codEmpleado = Integer.parseInt(request.getParameter("id"));
+                                Empleado emp = empleadoDao.buscar(codEmpleado);
+                                request.setAttribute("empleado", emp);
                                 break;
                             case "Actualizar":
+                                try {
+                                    String id = request.getParameter("txtId");
+                                    String nombre = request.getParameter("txtNombre");
+                                    String apellido = request.getParameter("txtApellido");
+                                    String direccion = request.getParameter("txtDireccion");
+                                    String telefono = request.getParameter("txtTelefono");
+                                    String correo = request.getParameter("txtCorreo");
+                                    String puesto = request.getParameter("txtPuesto");
+                                    Part filePart = request.getPart("txtImagen");
+
+                                    InputStream inputStream = filePart.getInputStream();
+                                    byte[] imagenBytes;
+                                    try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+                                        byte[] buffer = new byte[4096];
+                                        int bytesRead;
+                                        while ((bytesRead = inputStream.read(buffer)) != -1) {
+                                            outputStream.write(buffer, 0, bytesRead);
+                                        }
+                                        imagenBytes = outputStream.toByteArray();
+                                    }
+
+                                    empleado.setCodigoEmpleado(Integer.parseInt(id));
+                                    empleado.setNombreEmpleado(nombre);
+                                    empleado.setApellidoEmpleado(apellido);
+                                    empleado.setDireccionEmpleado(direccion);
+                                    empleado.setTelefonoEmpleado(telefono);
+                                    empleado.setEmailEmpleado(correo);
+                                    empleado.setPuestoEmpleado(puesto);
+                                    empleado.setImagenPerfil(imagenBytes);
+
+                                    empleadoDao.actualizar(empleado);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                request.getRequestDispatcher("Controlador?menu=Empleado&accion=Listar").forward(request, response);
                                 break;
                             case "Eliminar":
-                                break;
-                            case "Buscar":
+                                codEmpleado = Integer.parseInt(request.getParameter("id"));
+                                empleadoDao.eliminar(codEmpleado);
+                                request.getRequestDispatcher("Controlador?menu=Empleado&accion=Listar").forward(request, response);
                                 break;
                             default:
-                                throw new AssertionError();
+                                System.out.println("Opcion no valida");
                         }
                         request.getRequestDispatcher("empleado.jsp").forward(request, response);
                     case "Venta":
