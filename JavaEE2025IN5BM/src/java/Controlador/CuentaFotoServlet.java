@@ -1,7 +1,7 @@
 package Controlador;
 
 import Modelo.EmpleadoDAO;
-import com.alanlacan.modelo.Empleado;
+import Modelo.Empleado;
 import java.io.IOException;
 import java.io.OutputStream;
 import javax.servlet.ServletException;

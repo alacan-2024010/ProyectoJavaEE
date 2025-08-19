@@ -1,7 +1,6 @@
 package Modelo;
 
 import Config.Conexion;
-import com.alanlacan.modelo.Empleado;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

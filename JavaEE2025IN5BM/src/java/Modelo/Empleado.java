@@ -1,4 +1,4 @@
-package com.alanlacan.modelo;
+package Modelo;
 
 public class Empleado {
 

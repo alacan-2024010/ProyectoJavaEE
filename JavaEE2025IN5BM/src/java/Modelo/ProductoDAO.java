@@ -1,71 +1,72 @@
 package Modelo;
+
+import Config.Conexion;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
 public class ProductoDAO {
-    private EntityManagerFactory emf;
 
-    private EntityManager em;
- 
-    public ProductoDAO () {
-        emf = Persistence.createEntityManagerFactory("dominio");
-        em = emf.createEntityManager();
-    }
-    
-    public void crearProducto(Producto producto) {
-        try {
-            em.getTransaction().begin();
-            em.persist(producto); 
-            em.getTransaction().commit();
-        } catch (Exception e) {
-            em.getTransaction().rollback();
-            e.printStackTrace();
-        }
+    Conexion cn = new Conexion();
+    Connection con;
+    PreparedStatement ps;
+    ResultSet rs;
+    int resp;
 
-    }
- 
-    public Producto buscarProducto(int codigoProducto) {
-        return em.find(Producto.class, codigoProducto);
-    }
-    
-    
-    public void actualizarProducto(Producto producto) {
-        try {
-            em.getTransaction().begin();
-            em.merge(producto);
-            em.getTransaction().commit();
-        } catch (Exception e) {
-            em.getTransaction().rollback();
-            e.printStackTrace();
-        }
-    }
- 
-    public void eliminarProducto(int codigoProducto) {
+    //Método Listar
+    public List listar() {
+        String sql = "call sp_listarProductos()";
+        List<Producto> listaProducto = new ArrayList<>();
 
         try {
-           Producto producto = em.find(Producto.class, codigoProducto);
-            if (producto != null) {
-                em.getTransaction().begin();
-                em.remove(producto); 
-                em.getTransaction().commit();
+            con = cn.Conexion();
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Producto prod = new Producto();
+                Categoria cat = new Categoria();
+                Proveedor prv = new Proveedor();
+
+                prod.setCodigoProducto(rs.getInt(1));
+                prod.setNombreProducto(rs.getString(2));
+                prod.setDescripcionProducto(rs.getString(3));
+                prod.setPrecioProducto(rs.getBigDecimal(4));
+                prod.setStock(rs.getInt(5));
+                cat.setCodigoCategoria(rs.getInt(6));
+                prod.setCategoria(cat);
+                prv.setCodigoProveedor(rs.getInt(7));
+                prod.setProveedor(prv);
+                listaProducto.add(prod);
             }
 
         } catch (Exception e) {
-            em.getTransaction().rollback();
             e.printStackTrace();
         }
+        return listaProducto;
     }
- 
-    public List<Producto> listarProductos() {
-        return em.createQuery("SELECT v FROM Producto v", Producto.class).getResultList();
+
+    public int agregar(Producto prod) {
+        String sql = "call sp_agregarProducto(?, ?, ?, ?, ?, ?)";
+
+        try {
+            con = cn.Conexion();
+            ps = con.prepareStatement(sql);
+
+            ps.setString(1, prod.getNombreProducto());
+            ps.setString(2, prod.getDescripcionProducto());
+            ps.setBigDecimal(3, prod.getPrecioProducto());
+            ps.setInt(4, prod.getStock());
+            ps.setInt(5, prod.getCategoria().getCodigoCategoria());
+            ps.setInt(6, prod.getProveedor().getCodigoProveedor());
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return resp;
     }
- 
-    public void cerrar() {
-        em.close();
-        emf.close();
-    }
- 
-    
+
 }

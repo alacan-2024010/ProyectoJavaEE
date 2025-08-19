@@ -1,67 +1,72 @@
-
 package Modelo;
 
+import Config.Conexion;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
 
 public class FacturaDAO {
-    private EntityManagerFactory emf;
-    private EntityManager em;
 
-    public FacturaDAO() {
-        emf = Persistence.createEntityManagerFactory("dominio"); // Asegúrate que el persistence unit "dominio" esté en persistence.xml
-        em = emf.createEntityManager();
-    }
+    Conexion cn = new Conexion();
+    Connection con;
+    PreparedStatement ps;
+    ResultSet rs;
+    int resp;
 
-    public void crearFactura(Factura factura) {
+    //Método Listar
+    public List listar() {
+        String sql = "call sp_listarFacturas()";
+        List<Factura> listaFactura = new ArrayList<>();
+
         try {
-            em.getTransaction().begin();
-            em.persist(factura);
-            em.getTransaction().commit();
-        } catch (Exception e) {
-            em.getTransaction().rollback();
-            e.printStackTrace();
-        }
-    }
+            con = cn.Conexion();
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
 
-    public Factura buscarFactura(int codigoFactura) {
-        return em.find(Factura.class, codigoFactura);
-    }
+            while (rs.next()) {
+                Factura fac = new Factura();
+                Venta vt = new Venta();
 
-    public void actualizarFactura(Factura factura) {
-        try {
-            em.getTransaction().begin();
-            em.merge(factura);
-            em.getTransaction().commit();
-        } catch (Exception e) {
-            em.getTransaction().rollback();
-            e.printStackTrace();
-        }
-    }
+                fac.setCodigoFactura(rs.getInt(1));
+                fac.setNumeroFactura(rs.getString(2));
+                fac.setFechaEmision(rs.getTimestamp(3).toLocalDateTime());
+                fac.setTotalFactura(rs.getBigDecimal(4));
 
-    public void eliminarFactura(int codigoFactura) {
-        try {
-            Factura factura = em.find(Factura.class, codigoFactura);
-            if (factura != null) {
-                em.getTransaction().begin();
-                em.remove(factura);
-                em.getTransaction().commit();
+                vt.setCodigoVenta(rs.getInt(5));
+                fac.setCodVenta(vt);
+                listaFactura.add(fac);
             }
+
         } catch (Exception e) {
-            em.getTransaction().rollback();
             e.printStackTrace();
         }
+        return listaFactura;
     }
 
-    public List<Factura> listarFacturas() {
-        return em.createQuery("SELECT c FROM Factura c", Factura.class).getResultList();
-    }
+    public int agregar(Factura fac) {
+        String sql = "call sp_agregarFactura(?,?,?,?)";
 
-    public void cerrar() {
-        em.close();
-        emf.close();
+        try {
+            con = cn.Conexion();
+            ps = con.prepareStatement(sql);
+
+            ps.setString(1, fac.getNumeroFactura());
+            ps.setTimestamp(2, Timestamp.valueOf(fac.getFechaEmision()));
+            ps.setBigDecimal(3, fac.getTotalFactura());
+            ps.setInt(4, fac.getCodVenta().getCodigoVenta());
+            System.out.println("Factura: " + fac.getNumeroFactura()
+                    + ", Fecha: " + fac.getFechaEmision()
+                    + ", Total: " + fac.getTotalFactura()
+                    + ", Venta: " + fac.getCodVenta().getCodigoVenta());
+
+            resp = ps.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return resp;
     }
 }

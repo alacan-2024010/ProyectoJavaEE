@@ -1,32 +1,26 @@
 
 package Modelo;
-import javax.persistence.*;
 
-@Entity
-@Table(name = "Categorias")
 public class Categoria {
     
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int codigCategoria;
+    private int codigoCategoria;
     
-    @Column
     private String nombre;
 
     public Categoria() {
     }
 
-    public Categoria(int codigCategoria, String nombre) {
-        this.codigCategoria = codigCategoria;
+    public Categoria(int codigoCategoria, String nombre) {
+        this.codigoCategoria = codigoCategoria;
         this.nombre = nombre;
     }
 
-    public int getCodigCategoria() {
-        return codigCategoria;
+    public int getCodigoCategoria() {
+        return codigoCategoria;
     }
 
-    public void setCodigCategoria(int codigCategoria) {
-        this.codigCategoria = codigCategoria;
+    public void setCodigoCategoria(int codigoCategoria) {
+        this.codigoCategoria = codigoCategoria;
     }
 
     public String getNombre() {
@@ -39,7 +33,7 @@ public class Categoria {
 
     @Override
     public String toString() {
-        return "Categoria{" + "codigCategoria=" + codigCategoria + ", nombre=" + nombre + '}';
+        return "Categoria{" + "codigoCategoria=" + codigoCategoria + ", nombre=" + nombre + '}';
     }
     
     
