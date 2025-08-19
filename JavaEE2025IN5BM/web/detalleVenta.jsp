@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="es">
@@ -13,18 +14,18 @@
     <div class="contenedor-principal">
         <div class="form-container">
             <h2>Gestión de Detalle de Ventas</h2>
-            <form class="formulario" action="Controlador?menu=DetalleVenta" method="POST">
-                <input type="text" autocomplete="off" name="txtCodigoDetalle" placeholder="Código de Detalle Venta" />
-                <input type="text" autocomplete="off" name="txtCantidad" placeholder="Cantidad del producto" />
-                <input type="text" autocomplete="off" name="txtPrecioUnitario" placeholder="Precio Unitario" />
-                <input type="text" autocomplete="off" name="txtCodigoVenta" placeholder="Código de Venta" />
-                <input type="text" autocomplete="off" name="txtCodigoProducto" placeholder="Código de Producto" />
+            <form action="Controlador?menu=DetalleVenta" method="POST" class="formulario">
+                <input type="text" value="${detalles.getCodigoDetalleVenta()}" name="txtCodigoDetalle" placeholder="Código de Detalle Venta"/>
+                <input type="text" value="${detalles.getCantidad()}" name="txtCantidad" placeholder="Cantidad del producto" required/>
+                <input type="text" value="${detalles.getPrecioUnitario()}" name="txtPrecioUnitario" placeholder="Precio Unitario" required/>
+                <input type="text" value="${detalles.getVenta()}" name="txtCodigoVenta" placeholder="Código de Venta" required/>
+                <input type="text" value="${detalles.getProducto()}" name="txtCodigoProducto" placeholder="Código de Producto" required/>
 
                 <div class="botones">
-                    <button type="submit" name="accion" value="Agregar" class="btn-accion">Agregar</button>
-                    <button type="submit" name="accion" value="Actualizar" class="btn-accion">Actualizar</button>
-                    <button type="submit" name="accion" value="Buscar" class="btn-accion">Buscar</button>
-                    <button type="submit" name="accion" value="Eliminar" class="eliminar-nuevo">Eliminar</button>
+                    <button type="submit" name="accion" value="Agregar">Agregar</button>
+                    <button type="submit" name="accion" value="Actualizar">Actualizar</button>
+                    <button type="submit" name="accion" value="Buscar">Buscar</button>
+                    <button type="submit" name="accion" value="Eliminar">Eliminar</button>
                 </div>
             </form>
 
@@ -45,13 +46,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <c:forEach var="detalle" items="${detalles}">
+                <c:forEach var="detalles" items="${detalleVentas}">
                         <tr>
-                            <td>${detalle.codigoDetalleVenta}</td>
-                            <td>${detalle.cantidad}</td>
-                            <td>${detalle.precioUnitario}</td>
-                            <td>${detalle.codigoVenta}</td>
-                            <td>${detalle.codigoProducto}</td>
+                            <td>${detalles.getCodigoDetalleVenta()}</td>
+                            <td>${detalles.getCantidad()}</td>
+                            <td>${detalles.getPrecioUnitario()}</td>
+                            <td>${detalles.venta.codigoVenta}</td>
+                            <td>${detalles.producto.codigoProducto}</td>
                         </tr>
                     </c:forEach>
                 </tbody>

@@ -2,31 +2,13 @@
 package Modelo;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Scanner;
-import javax.persistence.*;
- 
-@Entity
-@Table(name = "DetalleVentas")
+
 public class DetalleVenta {
 
-    @Id
-    @Column
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int codigoDetalleVenta;
-
-    @Column
     private int cantidad;
-
-    @Column
     private BigDecimal precioUnitario;
-
-    @ManyToOne
-    @JoinColumn(name = "codigoVenta")
     private Venta venta;
-
-    @ManyToOne
-    @JoinColumn(name = "codigoProducto")
     private Producto producto;
 
     public DetalleVenta() {
