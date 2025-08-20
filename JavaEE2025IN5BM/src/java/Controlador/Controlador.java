@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -465,32 +466,87 @@ public class Controlador extends HttpServlet {
                 case "DetalleVenta":
                     switch (accion) {
                         case "Listar":
-                            List listaDetalleVenta = detalleVentaDAO.listar();
-                            request.setAttribute("detalleVentas", listaDetalleVenta);
+                            List<DetalleVenta> listaDV = detalleVentaDAO.listar();
+                            request.setAttribute("detalleVentas", listaDV);
                             break;
+
                         case "Agregar":
-                            String cantidad = request.getParameter("txtCantidad");
+                            int cantidad = Integer.parseInt(request.getParameter("txtCantidad"));
+                            BigDecimal precioUnitario = new BigDecimal(request.getParameter("txtPrecioUnitario"));
+                            int codigoVenta = Integer.parseInt(request.getParameter("txtCodigoVenta"));
+                            int codigoProducto = Integer.parseInt(request.getParameter("txtCodigoProducto"));
 
-                            String precioUnitario = request.getParameter("txtPrecioUnitario");
+                            DetalleVenta nuevoDV = new DetalleVenta();
 
-                            String Codventa = request.getParameter("txtCodigoVenta");
+                            nuevoDV.setCantidad(cantidad);
+                            nuevoDV.setPrecioUnitario(precioUnitario);
 
-                            String Codproducto = request.getParameter("txtCodigoProducto");
+                            venta.setCodigoVenta(codigoVenta);
+                            producto.setCodigoProducto(codigoProducto);
 
-                            detalleVenta.setCantidad(Integer.parseInt(cantidad));
-                            detalleVenta.setPrecioUnitario(BigDecimal.valueOf(Double.parseDouble(precioUnitario)));
+                            nuevoDV.setVenta(venta);
+                            nuevoDV.setProducto(producto);
 
-                            venta.setCodigoVenta(Integer.parseInt(Codventa));
-                            detalleVenta.setVenta(venta);
-
-                            producto.setCodigoProducto(Integer.parseInt(Codproducto));
-                            detalleVenta.setProducto(producto);
-
-                            detalleVentaDAO.agregar(detalleVenta);
+                            detalleVentaDAO.agregar(nuevoDV);
                             request.getRequestDispatcher("Controlador?menu=DetalleVenta&accion=Listar").forward(request, response);
                             break;
+
+                        case "Editar":
+                            int codDV = Integer.parseInt(request.getParameter("codigoDetalleVenta"));
+                            DetalleVenta dev = detalleVentaDAO.listarPorCodigo(codDV);
+                            request.setAttribute("detalles", dev); // nombre correcto
+
+                            List<DetalleVenta> listaDVEditar = detalleVentaDAO.listar(); // seguir mostrando lista
+                            request.setAttribute("detalleVentas", listaDVEditar);
+
+                            request.getRequestDispatcher("detalleVenta.jsp").forward(request, response); // ir directo al JSP
+                            break;
+
+                        case "Actualizar":
+                            int codigoActualizar = Integer.parseInt(request.getParameter("txtCodigoDetalleVenta"));
+                            cantidad = Integer.parseInt(request.getParameter("txtCantidad"));
+                            precioUnitario = new BigDecimal(request.getParameter("txtPrecioUnitario"));
+                            codigoVenta = Integer.parseInt(request.getParameter("txtCodigoVenta"));
+                            codigoProducto = Integer.parseInt(request.getParameter("txtCodigoProducto"));
+
+                            DetalleVenta dvActualizar = new DetalleVenta();
+                            venta = new Venta();
+                            producto = new Producto();
+
+                            dvActualizar.setCodigoDetalleVenta(codigoActualizar);
+                            dvActualizar.setCantidad(cantidad);
+                            dvActualizar.setPrecioUnitario(precioUnitario);
+
+                            venta.setCodigoVenta(codigoVenta);
+                            producto.setCodigoProducto(codigoProducto);
+
+                            dvActualizar.setVenta(venta);
+                            dvActualizar.setProducto(producto);
+
+                            detalleVentaDAO.actualizar(dvActualizar);
+                            request.getRequestDispatcher("Controlador?menu=DetalleVenta&accion=Listar").forward(request, response);
+                            break;
+
+                        case "Eliminar":
+                            int codigoEliminar = Integer.parseInt(request.getParameter("codigoDetalleVenta"));
+                            detalleVentaDAO.eliminar(codigoEliminar);
+                            request.getRequestDispatcher("Controlador?menu=DetalleVenta&accion=Listar").forward(request, response);
+                            break;
+                            
+                            case "Buscar":
+                            int codigoBuscar = Integer.parseInt(request.getParameter("txtBuscarCodigo"));
+                            DetalleVenta detalleBuscado = detalleVentaDAO.listarPorCodigo(codigoBuscar);
+
+                            List<DetalleVenta> listaBusqueda = new ArrayList<>();
+                            if (detalleBuscado.getCodigoDetalleVenta() != 0) {
+                                listaBusqueda.add(detalleBuscado);
+                            }
+
+                            request.setAttribute("detalleVentas", listaBusqueda);
+                            break;
+
                         default:
-                            throw new AssertionError();
+                            throw new AssertionError("Acción no válida en DetalleVenta");
                     }
                     request.getRequestDispatcher("detalleVenta.jsp").forward(request, response);
                     break;
