@@ -41,10 +41,6 @@
                     <button type="submit" name="accion" value="Actualizar" class="btn-actualizar">
                         <span>Actualizar</span>
                     </button>
-
-                    <button type="submit" name="accion" value="Limpiar" class="btn-limpiar">
-                        <span>Limpiar</span>
-                    </button>
                 </div>
             </form>
 

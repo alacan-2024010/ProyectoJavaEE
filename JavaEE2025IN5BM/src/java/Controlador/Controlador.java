@@ -29,6 +29,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -38,6 +39,7 @@ import javax.servlet.http.Part;
  *
  * @author informatica
  */
+@MultipartConfig
 public class Controlador extends HttpServlet {
 
     Cliente cliente = new Cliente();
@@ -267,25 +269,33 @@ public class Controlador extends HttpServlet {
                             break;
                         case "Agregar":
                             try {
+                                // 1) Inicializar el objeto empleado
+                                Empleado empleado = new Empleado();
+
                                 String nombre = request.getParameter("txtNombre");
                                 String apellido = request.getParameter("txtApellido");
                                 String direccion = request.getParameter("txtDireccion");
                                 String telefono = request.getParameter("txtTelefono");
                                 String correo = request.getParameter("txtCorreo");
                                 String puesto = request.getParameter("txtPuesto");
-                                Part filePart = request.getPart("txtImagen");
 
-                                InputStream inputStream = filePart.getInputStream();
-                                byte[] imagenBytes;
-                                try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-                                    byte[] buffer = new byte[4096];
-                                    int bytesRead;
-                                    while ((bytesRead = inputStream.read(buffer)) != -1) {
-                                        outputStream.write(buffer, 0, bytesRead);
+                                // 2) Imagen
+                                Part filePart = request.getPart("txtImagen");
+                                byte[] imagenBytes = null;
+
+                                if (filePart != null && filePart.getSize() > 0) {
+                                    InputStream inputStream = filePart.getInputStream();
+                                    try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+                                        byte[] buffer = new byte[4096];
+                                        int bytesRead;
+                                        while ((bytesRead = inputStream.read(buffer)) != -1) {
+                                            outputStream.write(buffer, 0, bytesRead);
+                                        }
+                                        imagenBytes = outputStream.toByteArray();
                                     }
-                                    imagenBytes = outputStream.toByteArray();
                                 }
 
+                                // 3) Setear datos
                                 empleado.setNombreEmpleado(nombre);
                                 empleado.setApellidoEmpleado(apellido);
                                 empleado.setDireccionEmpleado(direccion);
@@ -294,7 +304,9 @@ public class Controlador extends HttpServlet {
                                 empleado.setPuestoEmpleado(puesto);
                                 empleado.setImagenPerfil(imagenBytes);
 
+                                // 4) Guardar en la BD
                                 empleadoDao.agregar(empleado);
+
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -358,90 +370,32 @@ public class Controlador extends HttpServlet {
                             List listaVenta = ventaDAO.listar();
                             request.setAttribute("ventas", listaVenta);
                             break;
-                        
                         case "Agregar":
                             String fecha = request.getParameter("txtFecha");
+
                             String total = request.getParameter("txtTotal");
+                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+                            LocalDateTime fechaEmision = LocalDateTime.parse(fecha, formatter);
+
                             String codCliente = request.getParameter("txtCodigoCliente");
                             String codEmpleado = request.getParameter("txtCodigoEmpleado");
 
-                            DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-                            LocalDateTime fechaEmision = LocalDateTime.parse(fecha, formato);
-                            Venta nuevaVenta = new Venta(); 
-                            nuevaVenta.setFecha(fechaEmision);
-                            nuevaVenta.setTotal(BigDecimal.valueOf(Double.parseDouble(total)));
+                            venta.setFecha(fechaEmision);
+                            venta.setTotal(BigDecimal.valueOf(Double.parseDouble(total)));
 
-                            Cliente nuevoCliente = new Cliente();
-                            Empleado nuevoEmpleado = new Empleado();
+                            cliente.setCodigoCliente(Integer.parseInt(codCliente));
+                            venta.setCodCliente(cliente);
+                            empleado.setCodigoEmpleado(Integer.parseInt(codEmpleado));
+                            venta.setCodEmpleado(empleado);
 
-                          
-                            nuevoCliente.setCodigoCliente(Integer.parseInt(codCliente));
-                            nuevoEmpleado.setCodigoEmpleado(Integer.parseInt(codEmpleado));
-
-                            nuevaVenta.setCodCliente(nuevoCliente);
-                            nuevaVenta.setCodEmpleado(nuevoEmpleado);
-
-                            ventaDAO.agregar(nuevaVenta);
-
-                            request.getRequestDispatcher("Controlador?menu=Venta&accion=Listar").forward(request, response);
+                            ventaDAO.agregar(venta);
+                            request.getRequestDispatcher("Controlador?menu?Venta&accion=Listar").forward(request, response);
                             break;
                         case "Editar":
-
-                        String codigoEditar = request.getParameter("id");
-                            try {
-                                int idVenta = Integer.parseInt(codigoEditar);
-                                Venta ventaSeleccionada = ventaDAO.buscar(idVenta);
-                                request.setAttribute("venta", ventaSeleccionada);
-                            } catch (NumberFormatException e) {
-                                e.printStackTrace();
-                            }
-                        
-                        request.getRequestDispatcher("Controlador?menu=Venta&accion=Listar").forward(request, response);
-
                             break;
-                        // Controlador.java - Inside the switch(accion)
                         case "Actualizar":
-                            String codVenta = request.getParameter("txtCodigoVenta");
-                             fecha = request.getParameter("txtFecha");
-                             total = request.getParameter("txtTotal");
-                             codCliente = request.getParameter("txtCodigoCliente");
-                             codEmpleado = request.getParameter("txtCodigoEmpleado");
-
-                            try {
-                                Venta v = new Venta();
-                                v.setCodigoVenta(Integer.parseInt(codVenta));
-
-                                 formato = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-                                v.setFecha(LocalDateTime.parse(fecha, formato));
-
-                                v.setTotal(new BigDecimal(total));
-
-                                Cliente cl = new Cliente();
-                                cl.setCodigoCliente(Integer.parseInt(codCliente));
-                                v.setCodCliente(cl);
-
-                                Empleado em = new Empleado();
-                                em.setCodigoEmpleado(Integer.parseInt(codEmpleado));
-                                v.setCodEmpleado(em);
-
-                                ventaDAO.actualizar(v);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-
-                            request.getRequestDispatcher("Controlador?menu=Venta&accion=Listar").forward(request, response);
                             break;
-
                         case "Eliminar":
-                            String codigoEliminar = request.getParameter("id");
-                                try {
-                                    int codEliminar = Integer.parseInt(codigoEliminar);
-                                    ventaDAO.eliminar(codEliminar);
-                                } catch (NumberFormatException e) {
-                                    e.printStackTrace();
-                                }
-                            
-                            request.getRequestDispatcher("Controlador?menu=Venta&accion=Listar").forward(request, response);
                             break;
                         case "Buscar":
                             break;
