@@ -6,6 +6,8 @@ package Controlador;
 
 import Modelo.Categoria;
 import Modelo.Cliente;
+import Modelo.Compra;
+import Modelo.CompraDAO;
 import Modelo.ClienteDAO;
 import Modelo.detalleCompraDAO;
 import Modelo.detalleCompra;
@@ -61,6 +63,8 @@ public class Controlador extends HttpServlet {
     DetalleVentaDAO detalleVentaDAO = new DetalleVentaDAO();
     detalleCompra detalleCompra = new detalleCompra();
     detalleCompraDAO detalleCompraDAO = new detalleCompraDAO();
+    Compra compra = new Compra();
+    CompraDAO compraDAO = new CompraDAO();
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -613,9 +617,75 @@ public class Controlador extends HttpServlet {
                     request.getRequestDispatcher("factura.jsp").forward(request, response);
                     break;
 
-                case "Compra":
-                    request.getRequestDispatcher("compras.jsp").forward(request, response);
-                    break;
+                 case "Compra":
+                        switch (accion) {
+                            case "Listar":
+                                List listaCompra = compraDAO.listar();
+                                request.setAttribute("compras", listaCompra);
+                                break;
+                            case "Agregar":
+                                String fechaCompra = request.getParameter("txtFechaCompra");
+                                String totalStr = request.getParameter("txtTotal");
+                                String codProveedor = request.getParameter("txtCodigoProveedor");
+                                String codEmpleadoParam = request.getParameter("txtCodigoEmpleado");
+                                
+                                if (fechaCompra != null && totalStr != null && codProveedor != null && codEmpleadoParam != null) {
+                                    compra.setFechaCompra(fechaCompra);
+                                    compra.setTotal(Double.parseDouble(totalStr));
+                                    compra.setCodigoProveedor(Integer.parseInt(codProveedor));
+                                    compra.setCodigoEmpleado(Integer.parseInt(codEmpleadoParam));
+                                    compraDAO.agregar(compra);
+                                }
+                                request.getRequestDispatcher("Controlador?menu=Compra&accion=Listar").forward(request, response);
+                                break;
+                            case "Editar":
+                                String codigoCStr = request.getParameter("codigoCompra");
+                                if (codigoCStr != null) {
+                                    int codigoC = Integer.parseInt(codigoCStr);
+                                    Compra c = compraDAO.listarCodigoPorCompra(codigoC); 
+                                    request.setAttribute("compra", c);
+                                }
+                                request.getRequestDispatcher("Controlador?menu=Compra&accion=Listar").forward(request, response);
+                                break;
+                            case "Actualizar":
+                                String codigoCAStr = request.getParameter("txtCodigoCompra");
+                                String fechaA = request.getParameter("txtFechaCompra");
+                                String totalAStr = request.getParameter("txtTotal");
+                                String codProveedorAStr = request.getParameter("txtCodigoProveedor");
+                                String codEmpleadoAStr = request.getParameter("txtCodigoEmpleado");
+                                
+                                if (codigoCAStr != null && fechaA != null && totalAStr != null && 
+                                    codProveedorAStr != null && codEmpleadoAStr != null) {
+                                    int codigoCA = Integer.parseInt(codigoCAStr);
+                                    double totalA = Double.parseDouble(totalAStr);
+                                    int codProveedorA = Integer.parseInt(codProveedorAStr);
+                                    int codEmpleadoA = Integer.parseInt(codEmpleadoAStr);
+                                    
+                                    compra.setCodigoCompra(codigoCA);
+                                    compra.setFechaCompra(fechaA);
+                                    compra.setTotal(totalA);
+                                    compra.setCodigoProveedor(codProveedorA);
+                                    compra.setCodigoEmpleado(codEmpleadoA);
+                                    compraDAO.actualizar(compra);
+                                }
+                                request.getRequestDispatcher("Controlador?menu=Compra&accion=Listar").forward(request, response);
+                                break;
+                            case "Eliminar":
+                                String codigoEStr = request.getParameter("codigoCompra");
+                                if (codigoEStr != null) {
+                                    int codigoE = Integer.parseInt(codigoEStr);
+                                    compraDAO.eliminar(codigoE);
+                                }
+                                request.getRequestDispatcher("Controlador?menu=Compra&accion=Listar").forward(request, response);
+                                break;
+                            default:
+                                // Si no hay acción válida, mostrar lista por defecto
+                                List listaCompraDefault = compraDAO.listar();
+                                request.setAttribute("compras", listaCompraDefault);
+                                break;
+                        }
+                        request.getRequestDispatcher("compra.jsp").forward(request, response);
+                        break;
                 case "DetalleCompra":
                     switch (accion) {
                         case "Listar":

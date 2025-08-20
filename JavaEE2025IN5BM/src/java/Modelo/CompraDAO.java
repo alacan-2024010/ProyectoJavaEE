@@ -1,66 +1,106 @@
 package Modelo;
-
-import Modelo.Compra;
-
-import javax.persistence.*;
+import Config.Conexion;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CompraDAO {
-
-    private EntityManagerFactory emf;
-    private EntityManager em;
-
-    public CompraDAO() {
-        emf = Persistence.createEntityManagerFactory("dominio"); // Asegúrate que el persistence unit "dominio" esté en persistence.xml
-        em = emf.createEntityManager();
-    }
-
-    public void crearCompra(Compra compra) {
+    Conexion cn = new Conexion();
+    Connection con;
+    PreparedStatement ps;
+    ResultSet rs;
+    int resp;
+    
+    public List<Compra> listar() {
+        List<Compra> listaCompra = new ArrayList<>();
+        String sql = "call sp_listarCompras()";
         try {
-            em.getTransaction().begin();
-            em.persist(compra);
-            em.getTransaction().commit();
-        } catch (Exception e) {
-            em.getTransaction().rollback();
-            e.printStackTrace();
-        }
-    }
-
-    public Compra buscarCompra(int codigoCompra) {
-        return em.find(Compra.class, codigoCompra);
-    }
-
-    public void actualizarCompra(Compra compra) {
-        try {
-            em.getTransaction().begin();
-            em.merge(compra);
-            em.getTransaction().commit();
-        } catch (Exception e) {
-            em.getTransaction().rollback();
-            e.printStackTrace();
-        }
-    }
-
-    public void eliminarCompra(int codigoCompra) {
-        try {
-            Compra compra = em.find(Compra.class, codigoCompra);
-            if (compra != null) {
-                em.getTransaction().begin();
-                em.remove(compra);
-                em.getTransaction().commit();
+            con = cn.Conexion();
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Compra c = new Compra();
+                c.setCodigoCompra(rs.getInt(1));
+                c.setFechaCompra(rs.getString(2));
+                c.setTotal(rs.getDouble(3));
+                c.setCodigoProveedor(rs.getInt(4));
+                c.setCodigoEmpleado(rs.getInt(5));
+                listaCompra.add(c);
             }
         } catch (Exception e) {
-            em.getTransaction().rollback();
             e.printStackTrace();
         }
+        return listaCompra;
     }
-
-    public List<Compra> listarCompras() {
-        return em.createQuery("SELECT c FROM Compra c", Compra.class).getResultList();
+    
+    public int agregar(Compra c) {
+        String sql = "call sp_agregarCompra(?,?,?,?)";
+        try {
+            con = cn.Conexion();
+            ps = con.prepareStatement(sql);
+            ps.setString(1, c.getFechaCompra());
+            ps.setDouble(2, c.getTotal());
+            ps.setInt(3, c.getCodigoProveedor());
+            ps.setInt(4, c.getCodigoEmpleado());
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return resp;
     }
-
-    public void cerrar() {
-        em.close();
-        emf.close();
+    
+    public Compra listarCodigoPorCompra(int id) {
+        Compra c = new Compra();
+        String sql = "SELECT * FROM Compras WHERE codigoCompra = " + id;
+        try {
+            con = cn.Conexion();
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                c.setCodigoCompra(rs.getInt(1));
+                c.setFechaCompra(rs.getString(2));          
+                c.setTotal(rs.getDouble(3));
+                c.setCodigoProveedor(rs.getInt(4));
+                c.setCodigoEmpleado(rs.getInt(5));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return c;
+    }
+    
+    public int actualizar(Compra c) {
+        String sql = "CALL sp_editarCompra(?,?,?,?,?)";
+        try {
+            con = cn.Conexion();
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, c.getCodigoCompra());
+            ps.setString(2, c.getFechaCompra());
+            ps.setDouble(3, c.getTotal());
+            ps.setInt(4, c.getCodigoProveedor());
+            ps.setInt(5, c.getCodigoEmpleado());
+            ps.executeUpdate();
+           
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return resp;
+    }
+    
+    public void eliminar(int codigoCompra) {
+        String sql = "CALL sp_eliminarCompra(?)";
+        try {
+            con = cn.Conexion();
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, codigoCompra);
+            ps.executeUpdate();
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            
+        }
+        
     }
 }
