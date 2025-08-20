@@ -1,6 +1,6 @@
 package Modelo;
 
-public class detalleCompra {
+public class DetalleCompra {
     private int codigoDetalleCompra;
     private int cantidad;
     private double precioUnitario;
@@ -8,11 +8,11 @@ public class detalleCompra {
     private int codigoProducto;
 
  
-    public detalleCompra() {
+    public DetalleCompra() {
     }
 
     
-    public detalleCompra(int cantidad, double precioUnitario, int codigoCompra, int codigoProducto) {
+    public DetalleCompra(int cantidad, double precioUnitario, int codigoCompra, int codigoProducto) {
         this.cantidad = cantidad;
         this.precioUnitario = precioUnitario;
         this.codigoCompra = codigoCompra;
