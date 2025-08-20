@@ -370,32 +370,90 @@ public class Controlador extends HttpServlet {
                             List listaVenta = ventaDAO.listar();
                             request.setAttribute("ventas", listaVenta);
                             break;
+                        
                         case "Agregar":
                             String fecha = request.getParameter("txtFecha");
-
                             String total = request.getParameter("txtTotal");
-                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-                            LocalDateTime fechaEmision = LocalDateTime.parse(fecha, formatter);
-
                             String codCliente = request.getParameter("txtCodigoCliente");
                             String codEmpleado = request.getParameter("txtCodigoEmpleado");
 
-                            venta.setFecha(fechaEmision);
-                            venta.setTotal(BigDecimal.valueOf(Double.parseDouble(total)));
+                            DateTimeFormatter formato = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+                            LocalDateTime fechaEmision = LocalDateTime.parse(fecha, formato);
+                            Venta nuevaVenta = new Venta(); 
+                            nuevaVenta.setFecha(fechaEmision);
+                            nuevaVenta.setTotal(BigDecimal.valueOf(Double.parseDouble(total)));
 
-                            cliente.setCodigoCliente(Integer.parseInt(codCliente));
-                            venta.setCodCliente(cliente);
-                            empleado.setCodigoEmpleado(Integer.parseInt(codEmpleado));
-                            venta.setCodEmpleado(empleado);
+                            Cliente nuevoCliente = new Cliente();
+                            Empleado nuevoEmpleado = new Empleado();
 
-                            ventaDAO.agregar(venta);
-                            request.getRequestDispatcher("Controlador?menu?Venta&accion=Listar").forward(request, response);
+                          
+                            nuevoCliente.setCodigoCliente(Integer.parseInt(codCliente));
+                            nuevoEmpleado.setCodigoEmpleado(Integer.parseInt(codEmpleado));
+
+                            nuevaVenta.setCodCliente(nuevoCliente);
+                            nuevaVenta.setCodEmpleado(nuevoEmpleado);
+
+                            ventaDAO.agregar(nuevaVenta);
+
+                            request.getRequestDispatcher("Controlador?menu=Venta&accion=Listar").forward(request, response);
                             break;
                         case "Editar":
+
+                        String codigoEditar = request.getParameter("id");
+                            try {
+                                int idVenta = Integer.parseInt(codigoEditar);
+                                Venta ventaSeleccionada = ventaDAO.buscar(idVenta);
+                                request.setAttribute("venta", ventaSeleccionada);
+                            } catch (NumberFormatException e) {
+                                e.printStackTrace();
+                            }
+                        
+                        request.getRequestDispatcher("Controlador?menu=Venta&accion=Listar").forward(request, response);
+
                             break;
+
                         case "Actualizar":
+                            String codVenta = request.getParameter("txtCodigoVenta");
+                             fecha = request.getParameter("txtFecha");
+                             total = request.getParameter("txtTotal");
+                             codCliente = request.getParameter("txtCodigoCliente");
+                             codEmpleado = request.getParameter("txtCodigoEmpleado");
+
+                            try {
+                                Venta v = new Venta();
+                                v.setCodigoVenta(Integer.parseInt(codVenta));
+
+                                 formato = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+                                v.setFecha(LocalDateTime.parse(fecha, formato));
+
+                                v.setTotal(new BigDecimal(total));
+
+                                Cliente cl = new Cliente();
+                                cl.setCodigoCliente(Integer.parseInt(codCliente));
+                                v.setCodCliente(cl);
+
+                                Empleado em = new Empleado();
+                                em.setCodigoEmpleado(Integer.parseInt(codEmpleado));
+                                v.setCodEmpleado(em);
+
+                                ventaDAO.actualizar(v);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+                            request.getRequestDispatcher("Controlador?menu=Venta&accion=Listar").forward(request, response);
                             break;
+
                         case "Eliminar":
+                            String codigoEliminar = request.getParameter("id");
+                                try {
+                                    int codEliminar = Integer.parseInt(codigoEliminar);
+                                    ventaDAO.eliminar(codEliminar);
+                                } catch (NumberFormatException e) {
+                                    e.printStackTrace();
+                                }
+                            
+                            request.getRequestDispatcher("Controlador?menu=Venta&accion=Listar").forward(request, response);
                             break;
                         case "Buscar":
                             break;
