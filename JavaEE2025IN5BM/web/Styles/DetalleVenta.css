@@ -28,7 +28,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  overflow-x: hidden;
+  overflow-x: auto; /* <-- CAMBIO CLAVE: Permite que el contenido desborde el ancho */
   position: relative;
 }
 body::before {
@@ -247,35 +247,8 @@ form input:focus {
 .botones button:active {
   transform: scale(0.95);
 }
-/* Botón eliminar rojo especial */
-button.eliminar-nuevo {
-  opacity: 0;
-  animation: fadeIn 0.6s ease-out forwards 0.4s;
-  width: 100%;
-  height: 40px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  background: #e62222;
-  border: none;
-  border-radius: 5px;
-  box-shadow: 1px 1px 3px rgba(0,0,0,0.15);
-  margin-top: 10px;
-  color: white;
-  font-weight: bold;
-  position: relative;
-  overflow: hidden;
-  transition: 200ms;
-}
-button.eliminar-nuevo:hover {
-  background: #ff3636;
-}
-button.eliminar-nuevo:focus {
-  outline: none;
-}
-button.eliminar-nuevo:active {
-  transform: scale(0.95);
-}
+
+
 /* Panel de tabla */
 .table-container {
   opacity: 0;
@@ -287,7 +260,7 @@ button.eliminar-nuevo:active {
   border-radius: var(--border-radius);
   backdrop-filter: blur(15px);
   box-shadow: 0 10px 30px var(--shadow-color);
-  overflow: hidden;
+  /* Se eliminó overflow-x: auto; para que se expanda el contenedor */
   transition: var(--transition);
   position: relative;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -301,7 +274,7 @@ button.eliminar-nuevo:active {
 table {
   opacity: 0;
   animation: fadeIn 0.6s ease-out forwards 0.4s;
-  width: 100%;
+  width: auto; /* <-- CAMBIO CLAVE: El ancho de la tabla se ajusta a su contenido */
   border-collapse: separate;
   border-spacing: 0;
   background-color: rgba(30, 30, 30, 0.8);
@@ -324,14 +297,15 @@ thead {
 }
 th, td {
   padding: 10px;
-  max-width: 120px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-align: center; 
 }
+
 th {
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
   font-size: 0.9rem;
 }
 .marca-interna {
@@ -359,91 +333,131 @@ th {
 /* Media Queries para responsividad */
 @media (max-width: 768px) {
   .contenedor-principal {
-      flex-direction: column;
+    flex-direction: column;
   }
   .form-container, .table-container {
-      width: 100%;
+    width: 100%;
   }
 }
 @media (min-width: 768px) {
   .contenedor-principal {
-      padding: 30px;
-      margin: 30px;
+    padding: 30px;
+    margin: 30px;
   }
   .form-container {
-      padding: 30px;
+    padding: 30px;
   }
   .table-container {
-      padding: 30px;
+    padding: 30px;
   }
   .form-container h2 {
-      font-size: 1.8rem;
-      margin-bottom: 25px;
+    font-size: 1.8rem;
+    margin-bottom: 25px;
   }
   form {
-      gap: 20px;
+    gap: 20px;
   }
   form input {
-      padding: 15px;
-      font-size: 1.1rem;
+    padding: 15px;
+    font-size: 1.1rem;
   }
   .botones {
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 15px;
-      margin-top: 25px;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 15px;
+    margin-top: 25px;
   }
   .botones button {
-      padding: 15px 20px;
-      font-size: 1rem;
+    padding: 15px 20px;
+    font-size: 1rem;
   }
   .marca-interna {
-      font-size: 1.4rem;
+    font-size: 1.4rem;
   }
 }
 @media (min-width: 1024px) {
   .contenedor-principal {
-      padding: 40px;
-      margin: 40px;
+    padding: 40px;
+    margin: 40px;
   }
   .form-container {
-      padding: 40px;
+    padding: 40px;
   }
   .table-container {
-      padding: 40px;
+    padding: 40px;
   }
   .form-container h2 {
-      font-size: 2rem;
-      margin-bottom: 30px;
+    font-size: 2rem;
+    margin-bottom: 30px;
   }
   .botones {
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
   }
   .marca-interna {
-      font-size: 1.6rem;
+    font-size: 1.6rem;
   }
 }
 @media (min-width: 1200px) {
   .contenedor-principal {
-      padding: 50px;
-      margin: 50px;
+    padding: 50px;
+    margin: 50px;
   }
   .form-container {
-      padding: 50px;
+    padding: 50px;
   }
   .table-container {
-      padding: 50px;
+    padding: 50px;
   }
   .form-container h2 {
-      font-size: 2.2rem;
+    font-size: 2.2rem;
   }
   .botones button {
-      padding: 18px 25px;
-      font-size: 1.1rem;
+    padding: 18px 25px;
+    font-size: 1.1rem;
   }
 }
 @keyframes fadeIn {
   to {
     opacity: 1;
   }
+}
+
+/* Estilos base para botones */
+.btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+/* Botón Editar (celeste degradado) */
+.btn.editar {
+  background: linear-gradient(45deg, #00c6ff, #0072ff);
+}
+
+.btn.editar:hover {
+  background: linear-gradient(45deg, #0072ff, #0050aa);
+}
+
+/* Botón Eliminar (rojo degradado) */
+.btn.eliminar {
+  background: linear-gradient(45deg, #ff4e50, #f44336);
+}
+
+.btn.eliminar:hover {
+  background: linear-gradient(45deg, #e53935, #c62828);
+}
+
+td:last-child {
+  white-space: nowrap; 
+  min-width: 150px;
+  max-width: none;
+}
+
+.table-container {
+  overflow-x: auto;
 }
