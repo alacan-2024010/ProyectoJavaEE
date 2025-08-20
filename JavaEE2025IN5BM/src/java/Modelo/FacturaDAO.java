@@ -57,10 +57,6 @@ public class FacturaDAO {
             ps.setTimestamp(2, Timestamp.valueOf(fac.getFechaEmision()));
             ps.setBigDecimal(3, fac.getTotalFactura());
             ps.setInt(4, fac.getCodVenta().getCodigoVenta());
-            System.out.println("Factura: " + fac.getNumeroFactura()
-                    + ", Fecha: " + fac.getFechaEmision()
-                    + ", Total: " + fac.getTotalFactura()
-                    + ", Venta: " + fac.getCodVenta().getCodigoVenta());
 
             resp = ps.executeUpdate();
 
@@ -68,5 +64,61 @@ public class FacturaDAO {
             e.printStackTrace();
         }
         return resp;
+    }
+    
+        public Factura listarPorFactura(int id) {
+                Factura fac = new Factura();
+                Venta vt = new Venta();
+
+        String sql = "Select * from Facturas where codigoFactura =" + id;
+        try {
+            con = cn.Conexion();
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                fac.setCodigoFactura(rs.getInt(1));
+                fac.setNumeroFactura(rs.getString(2));
+                fac.setFechaEmision(rs.getTimestamp(3).toLocalDateTime());
+                fac.setTotalFactura(rs.getBigDecimal(4));
+
+                vt.setCodigoVenta(rs.getInt(5));
+                fac.setCodVenta(vt);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return fac;
+
+    }
+
+    public int actualizar(Factura fac) {
+        String sql = "call sp_editarFactura(?,?,?,?,?)";
+        try {
+            con = cn.Conexion();
+            ps = con.prepareStatement(sql);
+            ps.setInt(1,fac.getCodigoFactura());
+            ps.setString(2, fac.getNumeroFactura());
+            ps.setTimestamp(3, Timestamp.valueOf(fac.getFechaEmision()));
+            ps.setBigDecimal(4, fac.getTotalFactura());
+            ps.setInt(5, fac.getCodVenta().getCodigoVenta());
+
+            resp = ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return resp;
+    }
+
+    public void eliminar(int codF) {
+        String sql = "call sp_eliminarFactura(?)";
+        try {
+            con = cn.Conexion();
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, codF);
+            ps.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }

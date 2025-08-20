@@ -9,43 +9,53 @@
 <!DOCTYPE html>
 <html lang="es">
 
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Gestión de Productos</title>
-        <link rel="stylesheet" href="Styles/producto.css" />
-        <link rel="stylesheet" href="fonts.css" />
-    </head>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestión de Productos</title>
+    <link rel="stylesheet" href="Styles/producto.css" />
+    <link rel="stylesheet" href="fonts.css" />
+</head>
 
-    <body>
+<body>
 
-        <nav>
-        </nav>
-        <div class="fondo"></div>
+    <nav>
+        <a href="#" class="logo">Essenza & Co.</a>
+    </nav>
 
-        <div class="contenedor-principal">
-            <div class="panel-formulario">
-                <h1>Gestión de Productos</h1>
-                <form action="Controlador?menu=Producto" method="POST" class="formulario">
-                    <input type="text" value="${producto.getCodigoProducto}" name="txtIdProducto" placeholder="ID del producto" />
-                    <input type="text" value="${producto.getNombreProducto}" name="txtNombreProducto" placeholder="Nombre del Producto" required/>
-                    <input type="text" value="${producto.getDescripcionProducto}" name="txtDescripcionProducto" placeholder="Descripción del Producto" required/>
-                    <input type="text" value="${producto.getPrecioProducto}" name="txtPrecioProducto" placeholder="Precio" required/>
-                    <input type="text" value="${producto.getStock}" name="txtExistenciasProducto" placeholder="Existencias" required/>
-                    <input type="text" value="${producto.getCategoria}" name="txtIdCategoria" placeholder="ID Categoría" required/>
-                    <input type="text" value="${producto.getProveedor}" name="txtIdMarca" placeholder="ID Marca" required/>
-                    <div class="botones">
-                        <button type="submit" name="accion" class="agregar" value="Agregar">Agregar</button>
-                        <button type="submit" name="accion" class="buscar" value="Buscar">Buscar</button>
-                    </div>
-                    <div class="marca-interna">
-                        Essenza & Co.
-                    </div>
-                </form>
-            </div>
+    <div class="contenedor-principal">
+        <div class="panel-formulario">
+            <h1>Gestión de Productos</h1>
+            <form action="Controlador?menu=Producto" method="POST" class="formulario">
+                <input type="text" value="${producto.getCodigoProducto()}" name="txtIdProducto"
+                    placeholder="ID del producto" />
+                <input type="text" value="${producto.getNombreProducto()}" name="txtNombreProducto"
+                    placeholder="Nombre del Producto" required />
+                <input type="text" value="${producto.getDescripcionProducto()}" name="txtDescripcionProducto"
+                    placeholder="Descripción del Producto" required />
+                <input type="text" value="${producto.getPrecioProducto()}" name="txtPrecioProducto"
+                    placeholder="Precio" required />
+                <input type="text" value="${producto.getStock()}" name="txtExistenciasProducto"
+                    placeholder="Existencias" required />
+                <input type="text" value="${producto.getCategoria()}" name="txtIdCategoria"
+                    placeholder="ID Categoría" required />
+                <input type="text" value="${producto.getProveedor()}" name="txtIdMarca"
+                    placeholder="ID Marca" required />
 
-            <div class="panel-tabla">
-                <div class="tabla-contenedor">
+                <div class="botones">
+                    <button type="submit" name="accion" class="btn agregar" value="Agregar">Agregar</button>
+                    <button type="submit" name="accion" class="btn buscar" value="Actualizar">Actualizar</button>
+                </div>
+
+                <div class="marca-interna">
+                    Essenza & Co.
+                </div>
+            </form>
+        </div>
+
+        <div class="panel-tabla">
+            <div class="tabla-contenedor">
+                <div class="tabla-scroll">
                     <table class="tabla">
                         <thead>
                             <tr>
@@ -56,12 +66,11 @@
                                 <th>Existencias</th>
                                 <th>ID Categoría</th>
                                 <th>ID Marca</th>
-                                <th>ACCIONES</th>
+                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <c:forEach  var="producto" items="${productos}">
-
+                            <c:forEach var="producto" items="${productos}">
                                 <tr>
                                     <td>${producto.codigoProducto}</td>
                                     <td>${producto.nombreProducto}</td>
@@ -71,16 +80,19 @@
                                     <td>${producto.categoria.codigoCategoria}</td>
                                     <td>${producto.proveedor.codigoProveedor}</td>
                                     <td>
-                                        <button type="submit" name="accion" class="actualizar" value="Actualizar">Actualizar</button>
-                                        <button type="submit" name="accion" class="eliminar" value="Eliminar">Eliminar</button>
+                                        <a href="Controlador?menu=Producto&accion=Editar&codigoProducto=${producto.getCodigoProducto()}"
+                                            class="btn editar">Editar</a>
+                                        <a href="Controlador?menu=Producto&accion=Eliminar&codigoProducto=${producto.getCodigoProducto()}"
+                                            class="btn eliminar">Eliminar</a>
                                     </td>
                                 </tr>
-
                             </c:forEach>
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
-    </body>
+    </div>
+</body>
+
 </html>
