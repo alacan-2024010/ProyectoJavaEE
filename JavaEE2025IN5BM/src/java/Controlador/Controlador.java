@@ -7,8 +7,8 @@ package Controlador;
 import Modelo.Categoria;
 import Modelo.Cliente;
 import Modelo.ClienteDAO;
-import Modelo.DetalleCompraDAO;
-import Modelo.DetalleCompra;
+import Modelo.detalleCompraDAO;
+import Modelo.detalleCompra;
 import Modelo.DetalleVenta;
 import Modelo.DetalleVentaDAO;
 import Modelo.EmpleadoDAO;
@@ -56,8 +56,8 @@ public class Controlador extends HttpServlet {
     VentaDAO ventaDAO = new VentaDAO();
     DetalleVenta detalleVenta = new DetalleVenta();
     DetalleVentaDAO detalleVentaDAO = new DetalleVentaDAO();
-    DetalleCompra detalleCompra = new DetalleCompra();
-    DetalleCompraDAO detalleCompraDAO = new DetalleCompraDAO();
+    detalleCompra detalleCompra = new detalleCompra();
+    detalleCompraDAO detalleCompraDAO = new detalleCompraDAO();
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -298,10 +298,7 @@ public class Controlador extends HttpServlet {
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-
                             request.getRequestDispatcher("Controlador?menu=Empleado&accion=Listar").forward(request, response);
-                            request.getRequestDispatcher("producto.jsp").forward(request, response);
-
                             break;
                         case "Editar":
                             codEmpleado = Integer.parseInt(request.getParameter("id"));
@@ -354,7 +351,7 @@ public class Controlador extends HttpServlet {
                             System.out.println("Opcion no valida");
                     }
                     request.getRequestDispatcher("empleado.jsp").forward(request, response);
-
+                            break;
                 case "Venta":
                     switch (accion) {
                         case "Listar":

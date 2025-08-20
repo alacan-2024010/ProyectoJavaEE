@@ -2,9 +2,6 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/C:/ProyectoJavaEE/ProyectoJavaEE/JavaEE2025IN5BM/src/java/Config/Conexion.java</file>
-        </group>
         <group/>
         <group>
             <file>file:/C:/ProyectoJavaEE/ProyectoJavaEE/JavaEE2025IN5BM/src/java/Controlador/Controlador.java</file>
@@ -23,6 +20,10 @@
             <file>file:/C:/ProyectoJavaEE/ProyectoJavaEE/JavaEE2025IN5BM/src/java/Controlador/Controlador.java</file>
             <file>file:/C:/ProyectoJavaEE/ProyectoJavaEE/JavaEE2025IN5BM/src/java/Modelo/ProveedorDAO.java</file>
             <file>file:/C:/ProyectoJavaEE/ProyectoJavaEE/JavaEE2025IN5BM/src/java/Modelo/DetalleCompra.java</file>
+        </group>
+        <group>
+            <file>file:/C:/ProyectoJavaEE2025/ProyectoJavaEE/JavaEE2025IN5BM/web/empleado.jsp</file>
+            <file>file:/C:/ProyectoJavaEE2025/ProyectoJavaEE/JavaEE2025IN5BM/src/java/Controlador/Controlador.java</file>
         </group>
     </open-files>
 </project-private>

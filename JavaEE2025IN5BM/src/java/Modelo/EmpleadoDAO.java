@@ -84,7 +84,7 @@ public class EmpleadoDAO {
     }
     
     public List<Empleado> listar() {
-        String sql = "SELECT codigoEmpleado, nombreEmpleado, apellidoEmpleado, direccionEmpleado, telefonoEmpleado, emailEmpleado, puestoEmpleado FROM Empleados"; 
+        String sql = "CALL sp_listarEmpleados()"; 
         List<Empleado> listaEmpleados = new ArrayList<>();
         try {
             con = cn.Conexion();

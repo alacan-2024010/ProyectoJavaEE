@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DetalleCompraDAO {
+public class detalleCompraDAO {
 
     Conexion cn = new Conexion();
     Connection con;
@@ -15,15 +15,15 @@ public class DetalleCompraDAO {
     ResultSet rs;
     int resp;
 
-    public List<DetalleCompra> listar() {
-        List<DetalleCompra> listaDetalle = new ArrayList<>();
+    public List<detalleCompra> listar() {
+        List<detalleCompra> listaDetalle = new ArrayList<>();
         String sql = "call sp_listarDetalleCompras()";
         try {
             con = cn.Conexion();
             ps = con.prepareStatement(sql);
             rs = ps.executeQuery();
             while (rs.next()) {
-                DetalleCompra dc = new DetalleCompra();
+                detalleCompra dc = new detalleCompra();
                 dc.setCodigoDetalleCompra(rs.getInt(1));
                 dc.setCantidad(rs.getInt(2));
                 dc.setPrecioUnitario(rs.getDouble(3));
@@ -37,7 +37,7 @@ public class DetalleCompraDAO {
         return listaDetalle;
     }
 
-    public int agregar(DetalleCompra dc) {
+    public int agregar(detalleCompra dc) {
         String sql = "call sp_agregarDetalleCompra(?,?,?,?)";
         try {
             con = cn.Conexion();
