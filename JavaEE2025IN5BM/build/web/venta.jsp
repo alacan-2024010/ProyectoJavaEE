@@ -29,8 +29,8 @@
                     <input type="text" autocomplete="off" value="${venta.getCodEmpleado()}" id="txtCodigoEmpleado" name="txtCodigoEmpleado" class="input" placeholder="Código de Empleado" required/>
 
                 <div class="botones">
-                    <button>Agregar</button>
-                    <button>Actualizar</button>
+                    <button type="submit" name="accion" value="Agregar" class="btn btn-warning me-2">Agregar</button>
+                    <button type="submit" name="accion" value="Actualizar" class="btn btn-warning me-2">Actualizar</button>
                     <button>Buscar</button>
                     <button class="eliminar">Eliminar</button>
                 </div>
@@ -39,7 +39,7 @@
                 </div>
             </form>
         </div>
-        <div class="panel-tabla">
+                <div class="panel-tabla">
             <div class="tabla-contenedor">
                 <table class="tabla">
                     <thead>
@@ -49,9 +49,9 @@
                             <th>Total</th>
                             <th>ID Cliente</th>
                             <th>ID Empleado</th>
-                        </tr>
+                            <th>Acciones</th> </tr>
                     </thead>
-                        <tbody>
+                    <tbody>
                         <c:forEach var="venta" items="${ventas}">
                             <tr>
                                 <td>${venta.codigoVenta}</td>
@@ -59,9 +59,17 @@
                                 <td>${venta.total}</td>
                                 <td>${venta.codCliente.codigoCliente}</td>
                                 <td>${venta.codEmpleado.codigoEmpleado}</td>
+                                <td>
+                                    <form action="Controlador?menu=Venta" method="POST" style="display:inline;">
+                                        <input type="hidden" name="accion" value="Eliminar">
+                                        <input type="hidden" name="id" value="${venta.codigoVenta}">
+                                        <a href="Controlador?menu=Venta&accion=Eliminar&id=${venta.codigoVenta}" class="btn btn-warning">Eliminar</a>
+                                    </form>
+                                <a href="Controlador?menu=Venta&accion=Editar&id=${venta.codigoVenta}" class="btn btn-warning">Editar</a>
+                                </td>
                             </tr>
                         </c:forEach>
-                        </tbody>
+                    </tbody>
                 </table>
             </div>
         </div>

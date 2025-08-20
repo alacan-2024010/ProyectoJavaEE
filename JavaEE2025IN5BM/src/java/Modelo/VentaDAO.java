@@ -36,6 +36,9 @@ public class VentaDAO {
                 prov.setTotal(rs.getBigDecimal(3));
                 cl.setCodigoCliente(rs.getInt(4));
                 em.setCodigoEmpleado(rs.getInt(5));
+                
+                prov.setCodCliente(cl);
+            prov.setCodEmpleado(em);
                 listaVenta.add(prov);
             }
             
@@ -45,21 +48,15 @@ public class VentaDAO {
         return listaVenta;
     }
      public int agregar(Venta ven){
-        //Llamar al procedimiento almacenado
         String sql= "call sp_AgregarVenta(?,?,?,?)";
         
         try {
-            //Conectar a la base de datos para preparar la consulta
             con = cn.Conexion();
             ps=con.prepareStatement(sql);
-            
-            //Los parametros del procedimiento
             ps.setTimestamp(1, Timestamp.valueOf(ven.getFecha()));
             ps.setBigDecimal(2, ven.getTotal());
             ps.setInt(3, ven.getCodCliente().getCodigoCliente());
             ps.setInt(4, ven.getCodEmpleado().getCodigoEmpleado());
-            
-
             
             ps.executeUpdate();
         } catch (Exception e) {
@@ -67,4 +64,64 @@ public class VentaDAO {
         }
         return resp;
     }
+     
+     
+                // Operación eliminar
+           public void eliminar(int codigoVenta){
+               String sql = "call sp_eliminarVenta(?);";
+               try {
+                   con = cn.Conexion();
+                   ps = con.prepareStatement(sql);
+                   ps.setInt(1, codigoVenta);
+                   ps.executeUpdate();
+               } catch (Exception e) {
+                   e.printStackTrace();
+               }
+           }
+
+
+
+            public int actualizar(Venta venta){
+                int resp = 0;
+                String sql = "call sp_editarVenta(?, ?, ?, ?, ?);";
+                try {
+                    con = cn.Conexion();
+                    ps = con.prepareStatement(sql);
+                    ps.setInt(1, venta.getCodigoVenta());
+                    ps.setTimestamp(2, Timestamp.valueOf(venta.getFecha())); 
+                    ps.setBigDecimal(3, venta.getTotal());
+                    ps.setInt(4, venta.getCodCliente().getCodigoCliente());
+                    ps.setInt(5, venta.getCodEmpleado().getCodigoEmpleado());
+                    resp = ps.executeUpdate();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return resp;
+            }
+            
+            public Venta buscar(int id){
+                Venta ventaEncontrada = null;
+                String sql = "call sp_buscarVenta(?);";
+                try {
+                    con = cn.Conexion();
+                    ps= con.prepareStatement(sql);
+                    ps.setInt(1, id);
+                    rs= ps.executeQuery();
+                    if (rs.next()) {
+                        ventaEncontrada = new Venta();
+                        Cliente cl = new Cliente();
+                        Empleado em = new Empleado();
+                        ventaEncontrada.setCodigoVenta(rs.getInt("codigoVenta"));
+                        ventaEncontrada.setFecha(rs.getTimestamp("fecha").toLocalDateTime());
+                        ventaEncontrada.setTotal(rs.getBigDecimal("total"));
+                        cl.setCodigoCliente(rs.getInt("codCliente"));
+                        em.setCodigoEmpleado(rs.getInt("codEmpleado"));
+                        ventaEncontrada.setCodCliente(cl);
+                        ventaEncontrada.setCodEmpleado(em);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return ventaEncontrada;
+            }
 }
