@@ -29,8 +29,8 @@
                     <img src="img/UsuarioAdmin.png" alt="Avatar">
                     <ul class="avatar-menu">
                         <li>${correo.emailEmpleado}</li>
-                        <li><a href="Controlador?menu=cambiarCuenta">Cambiar Cuenta</a></li>
-                        <li><a href="Controlador?menu=cerrarSesion">Cerrar sesión</a></li>
+                        <li><a href="Controlador?menu=Cambiar">Cambiar Cuenta</a></li>
+                        <li><a href="Controlador?menu=Cerrar">Cerrar sesión</a></li>
                     </ul>
                 </li>
             </ul>

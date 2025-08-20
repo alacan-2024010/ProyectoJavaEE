@@ -13,7 +13,7 @@
 
 <body>
     <nav>
-        <a href="#" class="logo">Essenza & Co.</a>
+        
     </nav>
 
     <div class="contenedor-principal">
