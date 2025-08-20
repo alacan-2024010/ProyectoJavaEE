@@ -34,7 +34,7 @@
                 <input type="text" autocomplete="off" value="${factura.getTotalFactura()}" 
                        name="txtTotal" placeholder="Total" required />
 
-                <input type="text" autocomplete="off" value="${factura.getCodVenta()}" 
+                <input type="text" autocomplete="off" value="${factura.codVenta.codigoVenta}" 
                        name="txtCodigoVenta" placeholder="Código de venta" required />
 
                 <div class="botones">

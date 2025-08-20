@@ -363,7 +363,7 @@ public class Controlador extends HttpServlet {
                             System.out.println("Opcion no valida");
                     }
                     request.getRequestDispatcher("empleado.jsp").forward(request, response);
-                            break;
+                    break;
                 case "Venta":
                     switch (accion) {
                         case "Listar":
@@ -469,6 +469,7 @@ public class Controlador extends HttpServlet {
                             request.getRequestDispatcher("Controlador?menu=Factura&accion=Listar").forward(request, response);
                             break;
                         case "Actualizar":
+                            String codeFac = request.getParameter("txtCodigoFactura");
                             String noFactura = request.getParameter("txtNumeroFactura");
 
                             String fechaE = request.getParameter("txtFechaEmision");
@@ -477,14 +478,14 @@ public class Controlador extends HttpServlet {
 
                             String totFactura = request.getParameter("txtTotal");
                             String codVen = request.getParameter("txtCodigoVenta");
-
+                            factura.setCodigoFactura(Integer.parseInt(codeFac));
                             factura.setNumeroFactura(noFactura);
                             factura.setFechaEmision(fechaEmi);
                             factura.setTotalFactura(BigDecimal.valueOf(Double.parseDouble(totFactura)));
 
                             venta.setCodigoVenta(Integer.parseInt(codVen));
                             factura.setCodVenta(venta);
-                            productoDao.actualizar(producto);
+                            facturaDAO.actualizar(factura);
                             request.getRequestDispatcher("Controlador?menu=Factura&accion=Listar").forward(request, response);
                             break;
                         case "Eliminar":

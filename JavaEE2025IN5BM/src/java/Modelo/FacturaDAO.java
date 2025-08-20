@@ -65,10 +65,10 @@ public class FacturaDAO {
         }
         return resp;
     }
-    
-        public Factura listarPorFactura(int id) {
-                Factura fac = new Factura();
-                Venta vt = new Venta();
+
+    public Factura listarPorFactura(int id) {
+        Factura fac = new Factura();
+        Venta vt = new Venta();
 
         String sql = "Select * from Facturas where codigoFactura =" + id;
         try {
@@ -96,7 +96,7 @@ public class FacturaDAO {
         try {
             con = cn.Conexion();
             ps = con.prepareStatement(sql);
-            ps.setInt(1,fac.getCodigoFactura());
+            ps.setInt(1, fac.getCodigoFactura());
             ps.setString(2, fac.getNumeroFactura());
             ps.setTimestamp(3, Timestamp.valueOf(fac.getFechaEmision()));
             ps.setBigDecimal(4, fac.getTotalFactura());

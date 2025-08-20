@@ -37,9 +37,9 @@
                     placeholder="Precio" required />
                 <input type="text" value="${producto.getStock()}" name="txtExistenciasProducto"
                     placeholder="Existencias" required />
-                <input type="text" value="${producto.getCategoria()}" name="txtIdCategoria"
+                <input type="text" value="${producto.categoria.codigoCategoria}" name="txtIdCategoria"
                     placeholder="ID Categoría" required />
-                <input type="text" value="${producto.getProveedor()}" name="txtIdMarca"
+                <input type="text" value="${producto.proveedor.codigoProveedor}" name="txtIdMarca"
                     placeholder="ID Marca" required />
 
                 <div class="botones">
